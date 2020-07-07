@@ -1,4 +1,4 @@
-import { createStore, createEffect, createEvent, forward, guard, sample } from "effector";
+import { createStore, createEffect, createEvent, guard, sample } from "effector";
 const trackingURL = "http://127.0.0.1:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 
@@ -28,8 +28,8 @@ const addDeclaredValue = createEvent("addDeclaredValue");
 guard({
   source: fetchFromTrackingFx.doneData,
   filter: (payload) => {
-    console.log(payload.ItemParameters.MailType.Id);
-    return payload.ItemParameters.MailCtg.Id !== 3;
+    console.log(payload.ItemParameters.MailCtg.Id);
+    return +payload.ItemParameters.MailCtg.Id !== 3;
   },
   target: addDeclaredValue,
 });
@@ -37,7 +37,7 @@ guard({
 //добавление остальных параметров в стор  для для формирования URL
 const createURLParameters = createEvent("createURLParameters");
 sample({
-  source: {},
+  source: {}, //здесь будет стор постоянного индекса(пока хард код 170044)
   clock: fetchFromTrackingFx.doneData,
   fn: (_, payload) => {
     const resultParameters = {};
@@ -56,43 +56,16 @@ sample({
   },
   target: createURLParameters,
 });
-//добавление остальных параметров в стор  для простых отправлений(синхронный эффект)
-// const urlSimpleCreationFx = createEffect("createSimpleURL", {
-//   handler: (payload) => {
-//     return {
-//       object: `&object=${payload.ItemParameters.MailType.Id}0${payload.ItemParameters.MailCtg.Id}0`,
-//       from: `&from=${payload.AddressParameters.DestinationAddress.Index}`,
-//       // to: `&to=${payload.AddressParameters.DestinationAddress.Index}`,
-//       to: `&to=170044`,
-//       weight: `&weight=${payload.ItemParameters.Mass}`,
-//     };
-//   },
-// });
-// //добавление остальных параметров в стор  для on-line отправлений(синхронный эффект)
-// const urlOnLineCreationFx = createEffect("createOnLineURL", {
-//   handler: (payload) => {
-//     return {
-//       object: `&object=${payload.ItemParameters.MailType.Id}0${payload.ItemParameters.MailCtg.Id}0`,
-//       from: `&from=${payload.AddressParameters.OperationAddress.Index}`,
-//       to: `&to=${payload.AddressParameters.DestinationAddress.Index}`,
-//       weight: `&weight=${payload.ItemParameters.Mass}`,
-//     };
-//   },
-// });
 
-// forward({
-//   from: fetchFromTrackingFx.doneData,
-//   to: urlSimpleCreationFx,
-// });
+const addNewPackage = createEvent("new package"); //добавление нового отправлния в лист
 
 const $urlParameters = createStore({})
-  // .on(urlSimpleCreationFx.doneData, (state, payload) => ({ ...state, ...payload }))
-  // .on(urlOnLineCreationFx.doneData, (state, payload) => ({ ...state, ...payload }))
   .on(createURLParameters, (state, payload) => ({ ...state, ...payload }))
-  .on(addDeclaredValue, (state, payload) => ({ ...state, sumoc: `&sumoc=${payload.FinanceParameters.Value}` }));
+  .on(addDeclaredValue, (state, payload) => ({ ...state, sumoc: `&sumoc=${payload.FinanceParameters.Value}` }))
+  .reset(addNewPackage); //reset стора после записи отравления в лист
 //$urlParameters.watch((s) => console.log(s));
-/***********************************************************ДОСЮДОВА ХЕРНЯ */
-//после заполнения стора параметров собираем url и передаем в эффект, который запрашивает данные из тарификатора
+
+//после заполнения стора с параметрами собираем url и передаем в эффект, который запрашивает данные из тарификатора
 sample({
   source: $urlParameters,
   clock: createURLParameters,
@@ -108,7 +81,6 @@ sample({
 });
 //const $fromTracking = createStore({}).on(fetchFromTarifficatorFx.doneData, (_, payload) => payload.paynds / 100);
 
-const addNewPackage = createEvent("new package");
 const $packageList = createStore({}).on(addNewPackage, (state, payload) => ({ ...state, ...payload }));
 //$packageList.watch((s) => console.log(s));
 
