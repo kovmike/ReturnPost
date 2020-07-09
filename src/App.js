@@ -1,30 +1,23 @@
-import React, { useState } from "react";
-import { List } from "./features/List/List";
-// import { using, spec, list, h } from "forest";
+import React from "react";
+import { Header } from "./ui/organisms/Header/Header";
+import { Navbar } from "./ui/organisms/Navbar/Navbar";
+import { routes } from "./ui/common/routes";
+import classes from "./App.module.css";
+import { Switch, Route } from "react-router-dom";
 
-import { fetchFromTrackingFx, enteringBarcode } from "./model/model";
-import "./App.css";
-
-export const App = () => {
-  const [barcode, setBarcode] = useState(null);
-
-  const click = () => {
-    const data = barcode ? { payload: `${barcode}` } : { payload: "17095247999439" };
-
-    enteringBarcode(data.payload);
-    fetchFromTrackingFx(data);
-  };
-
-  const onChangeInput = (e) => {
-    setBarcode(e.target.value);
-  };
-
+export const App = ({ history }) => {
+  console.log(history);
   return (
-    <div className="App">
-      <input type="text" onChange={onChangeInput}></input>
-      <button onClick={click}>click</button>
-      {/* <label>{barcode}</label> */}
-      <List />
+    <div className={classes.wrapper}>
+      <Header />
+      <Navbar />
+      <div className={classes.workArea}>
+        <Switch>
+          {routes.map((route, index) => (
+            <Route key={index} path={route.path} exact={route.exact} component={route.component} /> //children={<route.component />} />
+          ))}
+        </Switch>
+      </div>
     </div>
   );
 };

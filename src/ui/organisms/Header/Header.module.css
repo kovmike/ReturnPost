@@ -1,0 +1,15 @@
+.headerWrapper {
+  grid-area: h;
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
+  justify-content: space-between;
+  background-color: #0055a5;
+  color: white;
+}
+
+.headerWrapper img {
+  padding: 0 0 0 10px;
+  /* border: 1px solid white; */
+}

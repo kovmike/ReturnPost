@@ -1,0 +1,17 @@
+.wrapper {
+  position: relative;
+  margin: 0 auto;
+  display: grid;
+  /* width: 80%;
+  max-width: 1200px; */
+  grid-template-rows: 80px 1fr;
+  grid-template-columns: 1fr 10fr;
+  grid-template-areas:
+    "h h"
+    "n c";
+}
+
+.workArea {
+  grid-area: c;
+  margin: 20px;
+}

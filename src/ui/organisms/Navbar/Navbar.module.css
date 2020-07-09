@@ -1,0 +1,16 @@
+.wrapper {
+  grid-area: n;
+  background-color: #346fa6;
+  color: white;
+  height: 400px;
+}
+
+.menu {
+  list-style: none;
+  padding-inline-start: 10px;
+}
+
+.menuItem {
+  text-decoration: none;
+  color: white;
+}

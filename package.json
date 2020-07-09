@@ -9,8 +9,11 @@
     "effector": "^20.17.2",
     "effector-react": "^20.8.0",
     "forest": "^0.16.1",
+    "history": "^5.0.0",
+    "is-regexp": "^2.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1"
   },
   "scripts": {
