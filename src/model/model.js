@@ -1,11 +1,11 @@
-import { createStore, createEffect, createEvent, guard, sample } from "effector";
+import { createStore, createEffect, createEvent, guard, sample, forward } from "effector";
 const trackingURL = "http://127.0.0.1:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 
 // const rest =
 //   "https://tariff.pochta.ru/tariff/v1/calculate?jsonobject=23020&from=170044&to=111538&weight=441&closed=1&sumoc=10000&sumin=100000&sum_month=100000000&date=20200630";
 const enteringBarcode = createEvent("barcdode");
-const $barcode = createStore("").on(enteringBarcode, (_, payload) => payload);
+const $barcode = createStore("").on(enteringBarcode, (_, payload) => payload.barcode);
 //$barcode.watch((s) => console.log("barcode: " + s));
 
 //запрос данных с трекера
@@ -15,6 +15,11 @@ const fetchFromTrackingFx = createEffect("tracking", {
       .then((r) => r.json())
       .then((data) => data[0]);
   },
+});
+//после ввода шк перекидываем данные в запрос на трекер
+forward({
+  from: enteringBarcode,
+  to: fetchFromTrackingFx,
 });
 //запрос данных из тарификатора
 const fetchFromTarifficatorFx = createEffect("tarifficator", {
@@ -28,7 +33,6 @@ const addDeclaredValue = createEvent("addDeclaredValue");
 guard({
   source: fetchFromTrackingFx.doneData,
   filter: (payload) => {
-    console.log(payload.ItemParameters.MailCtg.Id);
     return +payload.ItemParameters.MailCtg.Id !== 3;
   },
   target: addDeclaredValue,
@@ -74,7 +78,7 @@ sample({
     for (let param in urlParameters) {
       url += urlParameters[param];
     }
-    console.log(url);
+
     return url;
   },
   target: fetchFromTarifficatorFx,
@@ -89,10 +93,11 @@ sample({
   source: $barcode,
   clock: fetchFromTarifficatorFx.doneData,
   fn: (barcode, tariffData) => {
-    return { [barcode]: { name: tariffData.name, paynds: tariffData.paynds / 100 } };
+    console.log(tariffData);
+    return { [barcode]: { name: tariffData.name, paynds: tariffData.paynds / 100, weight: tariffData.weight } };
   },
   target: addNewPackage,
 });
 
 /***************************************************** */
-export { fetchFromTrackingFx, $packageList, enteringBarcode };
+export { $packageList, enteringBarcode };
