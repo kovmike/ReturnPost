@@ -1,17 +1,58 @@
-import { createStore, createEffect, createEvent, guard, sample, forward } from "effector";
+import {
+  createStore,
+  createEffect,
+  createEvent,
+  guard,
+  sample,
+  forward,
+} from "effector";
 const trackingURL = "http://127.0.0.1:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 
+//формирование списка абонентских ящиков
+const toFetchAbonBox = createEvent("toFetchAbonBox");
+
+const fetchAbonBoxListFx = createEffect("AbonBox", {
+  handler: async (payload) => {
+    return fetch(trackingURL, {
+      method: "POST",
+      body: JSON.stringify({ destination: "db", queryString: payload }),
+    }).then((r) => r.json());
+    //.then((d) => JSON.stringify(d));
+  },
+});
+
+forward({
+  from: toFetchAbonBox,
+  to: fetchAbonBoxListFx,
+});
+
+const $abonBoxList = createStore([]).on(
+  fetchAbonBoxListFx.doneData,
+  (_, payload) => {
+    return payload;
+  }
+);
+$abonBoxList.watch((s) => console.log(s));
+
 // const rest =
 //   "https://tariff.pochta.ru/tariff/v1/calculate?jsonobject=23020&from=170044&to=111538&weight=441&closed=1&sumoc=10000&sumin=100000&sum_month=100000000&date=20200630";
+//p
 const enteringBarcode = createEvent("barcdode");
-const $barcode = createStore("").on(enteringBarcode, (_, payload) => payload.barcode);
+const $barcode = createStore("").on(
+  enteringBarcode,
+  (_, payload) => payload.barcode
+);
 //$barcode.watch((s) => console.log("barcode: " + s));
 
 //запрос данных с трекера
 const fetchFromTrackingFx = createEffect("tracking", {
   handler: async (payload) => {
-    return fetch(trackingURL, { method: "POST", body: JSON.stringify(payload) })
+    return fetch(trackingURL, {
+      method: "POST",
+      body: JSON.stringify({ destination: "tracker", ...payload }),
+      mode: "cors",
+    })
       .then((r) => r.json())
       .then((data) => data[0]);
   },
@@ -33,6 +74,7 @@ const addDeclaredValue = createEvent("addDeclaredValue");
 guard({
   source: fetchFromTrackingFx.doneData,
   filter: (payload) => {
+    console.log(payload);
     return +payload.ItemParameters.MailCtg.Id !== 3;
   },
   target: addDeclaredValue,
@@ -41,14 +83,17 @@ guard({
 //добавление остальных параметров в стор  для для формирования URL
 const createURLParameters = createEvent("createURLParameters");
 sample({
-  source: {}, //здесь будет стор постоянного индекса(пока хард код 170044)
+  source: {}, //здесь будет стор постоянного индекса(пока хард код 170044)!!!!!!!!!!!!!!!!!!!!!
   clock: fetchFromTrackingFx.doneData,
   fn: (_, payload) => {
     const resultParameters = {};
     resultParameters.object = `&object=${payload.ItemParameters.MailType.Id}0${payload.ItemParameters.MailCtg.Id}0`;
     resultParameters.weight = `&weight=${payload.ItemParameters.Mass}`;
 
-    if (+payload.ItemParameters.MailType.Id === 23 || +payload.ItemParameters.MailType.Id === 24) {
+    if (
+      +payload.ItemParameters.MailType.Id === 23 ||
+      +payload.ItemParameters.MailType.Id === 24
+    ) {
       resultParameters.from = `&from=170044`;
       resultParameters.to = `&to=${payload.AddressParameters.DestinationAddress.Index}`;
     } else {
@@ -65,7 +110,10 @@ const addNewPackage = createEvent("new package"); //добавление нов�
 
 const $urlParameters = createStore({})
   .on(createURLParameters, (state, payload) => ({ ...state, ...payload }))
-  .on(addDeclaredValue, (state, payload) => ({ ...state, sumoc: `&sumoc=${payload.FinanceParameters.Value}` }))
+  .on(addDeclaredValue, (state, payload) => ({
+    ...state,
+    sumoc: `&sumoc=${payload.FinanceParameters.Value}`,
+  }))
   .reset(addNewPackage); //reset стора после записи отравления в лист
 //$urlParameters.watch((s) => console.log(s));
 
@@ -85,7 +133,10 @@ sample({
 });
 //const $fromTracking = createStore({}).on(fetchFromTarifficatorFx.doneData, (_, payload) => payload.paynds / 100);
 
-const $packageList = createStore({}).on(addNewPackage, (state, payload) => ({ ...state, ...payload }));
+const $packageList = createStore({}).on(addNewPackage, (state, payload) => ({
+  ...state,
+  ...payload,
+}));
 //$packageList.watch((s) => console.log(s));
 
 //добавляем новое отправление в список
@@ -94,10 +145,16 @@ sample({
   clock: fetchFromTarifficatorFx.doneData,
   fn: (barcode, tariffData) => {
     console.log(tariffData);
-    return { [barcode]: { name: tariffData.name, paynds: tariffData.paynds / 100, weight: tariffData.weight } };
+    return {
+      [barcode]: {
+        name: tariffData.name,
+        paynds: tariffData.paynds / 100,
+        weight: tariffData.weight,
+      },
+    };
   },
   target: addNewPackage,
 });
 
 /***************************************************** */
-export { $packageList, enteringBarcode };
+export { $packageList, enteringBarcode, toFetchAbonBox, $abonBoxList };

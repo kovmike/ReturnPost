@@ -6,7 +6,6 @@ import classes from "./App.module.css";
 import { Switch, Route } from "react-router-dom";
 
 export const App = ({ history }) => {
-  console.log(history);
   return (
     <div className={classes.wrapper}>
       <Header />
@@ -14,7 +13,12 @@ export const App = ({ history }) => {
       <div className={classes.workArea}>
         <Switch>
           {routes.map((route, index) => (
-            <Route key={index} path={route.path} exact={route.exact} component={route.component} /> //children={<route.component />} />
+            <Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              component={route.component}
+            /> //children={<route.component />} />
           ))}
         </Switch>
       </div>
