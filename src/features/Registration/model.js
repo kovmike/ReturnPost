@@ -11,21 +11,19 @@ const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 
 //формирование списка абонентских ящиков
 const toFetchAbonBox = createEvent("toFetchAbonBox");
-
+/**
+ * Решить что делать с toFetchAbonBox
+ * либо удалить, либо через него форваардом запускать fetchAbonBoxListFx
+ */
 const fetchAbonBoxListFx = createEffect("AbonBox", {
   handler: async (payload) => {
     return fetch(trackingURL, {
       method: "POST",
       body: JSON.stringify({ destination: "db", queryString: payload }),
     }).then((r) => r.json());
-    //.then((d) => JSON.stringify(d));
   },
 });
-
-forward({
-  from: toFetchAbonBox,
-  to: fetchAbonBoxListFx,
-});
+fetchAbonBoxListFx(1);
 
 const $abonBoxList = createStore([]).on(
   fetchAbonBoxListFx.doneData,
@@ -33,7 +31,18 @@ const $abonBoxList = createStore([]).on(
     return payload;
   }
 );
-$abonBoxList.watch((s) => console.log(s));
+//$abonBoxList.watch((s) => console.log(s));
+
+//запись выбранного а/я
+const selectAbonBox = createEvent("selectAbonBox");
+const $selectedAbonBox = createStore({});
+//$selectedAbonBox.watch((s) => console.log(s));
+sample({
+  source: $abonBoxList,
+  clock: selectAbonBox,
+  fn: (list, abonBox) => list.filter((item) => item.abonentbox === abonBox),
+  target: $selectedAbonBox,
+});
 
 // const rest =
 //   "https://tariff.pochta.ru/tariff/v1/calculate?jsonobject=23020&from=170044&to=111538&weight=441&closed=1&sumoc=10000&sumin=100000&sum_month=100000000&date=20200630";
@@ -157,4 +166,11 @@ sample({
 });
 
 /***************************************************** */
-export { $packageList, enteringBarcode, toFetchAbonBox, $abonBoxList };
+export {
+  $packageList,
+  enteringBarcode,
+  toFetchAbonBox,
+  $abonBoxList,
+  selectAbonBox,
+  $selectedAbonBox,
+};

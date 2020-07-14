@@ -4,7 +4,8 @@ import classes from "./Registration.module.css";
 import {
   enteringBarcode,
   $packageList,
-  toFetchAbonBox,
+  selectAbonBox,
+  $selectedAbonBox,
   $abonBoxList,
 } from "./model";
 import { Button } from "./../../ui/atoms/Button";
@@ -12,6 +13,7 @@ import { Button } from "./../../ui/atoms/Button";
 export const Registration = () => {
   const packageList = useStore($packageList);
   const abonBoxList = useStore($abonBoxList);
+  const selectedAbonBox = useStore($selectedAbonBox);
   const [barcode, setBarcode] = useState(null);
 
   const click = () => {
@@ -43,20 +45,23 @@ export const Registration = () => {
   };
 
   const changeSearchAbonBox = (e) => {
-    if (e.target.value.length > 1) toFetchAbonBox(e.target.value);
+    //проверяем длину инпута, только после выделения нужного а/я вызываем евент
+    if (e.target.value.length > 5)
+      selectAbonBox(e.target.value.split(":")[0].trim());
+    // console.log(e.target.value.split(":")[0].trim());
   };
 
   //подготовка списка абонентских ящиков
   const prepareABList = () => {
     return abonBoxList.map((abonBox) => {
       return (
-        <option value={abonBox.abonentbox}>
-          {abonBox.id + " : " + abonBox.firmname}
+        <option value={abonBox.abonentbox + " : " + abonBox.firmname}>
+          {"ID: " + abonBox.id}
         </option>
       );
     });
   };
-
+  const clearInput = () => {};
   return (
     <div>
       <select name="destinationIndex">
@@ -68,8 +73,9 @@ export const Registration = () => {
       </select>
       <input list="abonBoxList" onChange={changeSearchAbonBox}></input>
       <datalist id="abonBoxList">{prepareABList()}</datalist>
+      <button onClick={clearInput}>X</button>
       <label>
-        {abonBoxList[0]?.abonentbox + " : " + abonBoxList[0]?.firmname}
+        {selectedAbonBox[0]?.abonentbox + " : " + selectedAbonBox[0]?.firmname}
       </label>
       <hr />
       <input type="text" onChange={onChangeInput}></input>
