@@ -1,25 +1,19 @@
 import React, { useState } from "react";
 import { useStore } from "effector-react";
 import classes from "./Registration.module.css";
-import {
-  enteringBarcode,
-  $packageList,
-  selectAbonBox,
-  $selectedAbonBox,
-  $abonBoxList,
-} from "./model";
-import { Button } from "./../../ui/atoms/Button";
+import { enteringBarcode, $packageList } from "./model";
+import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
+import * as UI from "./ui";
 
 export const Registration = () => {
   const packageList = useStore($packageList);
-  const abonBoxList = useStore($abonBoxList);
-  const selectedAbonBox = useStore($selectedAbonBox);
   const [barcode, setBarcode] = useState(null);
-
-  const click = () => {
-    const data = barcode
-      ? { barcode: `${barcode}` }
-      : { barcode: "17095247999439" };
+  const addPackage = () => {
+    /**
+     * TODO
+     * сделать валидацию поля(возможно вообще в форму вынести все!!)
+     */
+    const data = barcode ? { barcode: `${barcode}` } : { barcode: "17095247999439" };
 
     enteringBarcode(data);
   };
@@ -28,6 +22,7 @@ export const Registration = () => {
     setBarcode(e.target.value);
   };
 
+  //формирование списка приписанных отправлений
   const preparePackList = () => {
     if (Object.keys(packageList).length !== 0) {
       return Object.keys(packageList).map((pack, index) => (
@@ -44,43 +39,16 @@ export const Registration = () => {
     return null;
   };
 
-  const changeSearchAbonBox = (e) => {
-    //проверяем длину инпута, только после выделения нужного а/я вызываем евент
-    if (e.target.value.length > 5)
-      selectAbonBox(e.target.value.split(":")[0].trim());
-    // console.log(e.target.value.split(":")[0].trim());
-  };
-
-  //подготовка списка абонентских ящиков
-  const prepareABList = () => {
-    return abonBoxList.map((abonBox) => {
-      return (
-        <option value={abonBox.abonentbox + " : " + abonBox.firmname}>
-          {"ID: " + abonBox.id}
-        </option>
-      );
-    });
-  };
-  const clearInput = () => {};
   return (
     <div>
-      <select name="destinationIndex">
-        <option value="0" disabled selected>
-          Выберите индекс
-        </option>
-        <option value="170044">170044</option>
-        <option value="170965">170965</option>
-      </select>
-      <input list="abonBoxList" onChange={changeSearchAbonBox}></input>
-      <datalist id="abonBoxList">{prepareABList()}</datalist>
-      <button onClick={clearInput}>X</button>
-      <label>
-        {selectedAbonBox[0]?.abonentbox + " : " + selectedAbonBox[0]?.firmname}
-      </label>
+      <HeaderRegistration />
+
       <hr />
+
       <input type="text" onChange={onChangeInput}></input>
-      <Button title="Приписать" handler={click} />
+      <UI.Button title="Приписать" handler={addPackage} />
       <hr />
+
       <table className={classes.listOfPackages}>
         <caption>Приписанные отправления</caption>
         <thead>

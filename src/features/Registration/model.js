@@ -1,57 +1,13 @@
-import {
-  createStore,
-  createEffect,
-  createEvent,
-  guard,
-  sample,
-  forward,
-} from "effector";
-const trackingURL = "http://127.0.0.1:8000/";
+import { createStore, createEffect, createEvent, guard, sample, forward } from "effector";
+import { $selectedAbonBox, $destinationIndex } from "./ui";
+const trackingURL = "http://10.106.13.10:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
-
-//формирование списка абонентских ящиков
-const toFetchAbonBox = createEvent("toFetchAbonBox");
-/**
- * Решить что делать с toFetchAbonBox
- * либо удалить, либо через него форваардом запускать fetchAbonBoxListFx
- */
-const fetchAbonBoxListFx = createEffect("AbonBox", {
-  handler: async (payload) => {
-    return fetch(trackingURL, {
-      method: "POST",
-      body: JSON.stringify({ destination: "db", queryString: payload }),
-    }).then((r) => r.json());
-  },
-});
-fetchAbonBoxListFx(1);
-
-const $abonBoxList = createStore([]).on(
-  fetchAbonBoxListFx.doneData,
-  (_, payload) => {
-    return payload;
-  }
-);
-//$abonBoxList.watch((s) => console.log(s));
-
-//запись выбранного а/я
-const selectAbonBox = createEvent("selectAbonBox");
-const $selectedAbonBox = createStore({});
-//$selectedAbonBox.watch((s) => console.log(s));
-sample({
-  source: $abonBoxList,
-  clock: selectAbonBox,
-  fn: (list, abonBox) => list.filter((item) => item.abonentbox === abonBox),
-  target: $selectedAbonBox,
-});
 
 // const rest =
 //   "https://tariff.pochta.ru/tariff/v1/calculate?jsonobject=23020&from=170044&to=111538&weight=441&closed=1&sumoc=10000&sumin=100000&sum_month=100000000&date=20200630";
 //p
 const enteringBarcode = createEvent("barcdode");
-const $barcode = createStore("").on(
-  enteringBarcode,
-  (_, payload) => payload.barcode
-);
+const $barcode = createStore("").on(enteringBarcode, (_, payload) => payload.barcode);
 //$barcode.watch((s) => console.log("barcode: " + s));
 
 //запрос данных с трекера
@@ -92,22 +48,19 @@ guard({
 //добавление остальных параметров в стор  для для формирования URL
 const createURLParameters = createEvent("createURLParameters");
 sample({
-  source: {}, //здесь будет стор постоянного индекса(пока хард код 170044)!!!!!!!!!!!!!!!!!!!!!
+  source: $destinationIndex,
   clock: fetchFromTrackingFx.doneData,
-  fn: (_, payload) => {
+  fn: (destIndex, payload) => {
     const resultParameters = {};
     resultParameters.object = `&object=${payload.ItemParameters.MailType.Id}0${payload.ItemParameters.MailCtg.Id}0`;
     resultParameters.weight = `&weight=${payload.ItemParameters.Mass}`;
 
-    if (
-      +payload.ItemParameters.MailType.Id === 23 ||
-      +payload.ItemParameters.MailType.Id === 24
-    ) {
-      resultParameters.from = `&from=170044`;
+    if (+payload.ItemParameters.MailType.Id === 23 || +payload.ItemParameters.MailType.Id === 24) {
+      resultParameters.from = `&from=${destIndex}`;
       resultParameters.to = `&to=${payload.AddressParameters.DestinationAddress.Index}`;
     } else {
       resultParameters.from = `&from=${payload.AddressParameters.DestinationAddress.Index}`;
-      resultParameters.to = `&to=170044`;
+      resultParameters.to = `&to=${destIndex}`;
     }
 
     return resultParameters;
@@ -166,11 +119,4 @@ sample({
 });
 
 /***************************************************** */
-export {
-  $packageList,
-  enteringBarcode,
-  toFetchAbonBox,
-  $abonBoxList,
-  selectAbonBox,
-  $selectedAbonBox,
-};
+export { $packageList, enteringBarcode };
