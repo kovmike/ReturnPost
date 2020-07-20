@@ -7,21 +7,17 @@ import { Switch, Route } from "react-router-dom";
 
 export const App = ({ history }) => {
   return (
-    <div className={classes.wrapper}>
-      <Header />
-      <Navbar />
-      <div className={classes.workArea}>
-        <Switch>
+    <Switch>
+      <div className={classes.wrapper}>
+        <Header />
+        <Navbar />
+        <div className={classes.workArea}>
           {routes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              exact={route.exact}
-              component={route.component}
-            /> //children={<route.component />} />
+            <Route key={index} path={route.path} exact={route.exact} component={route.component} /> //children={<route.component />} />
           ))}
-        </Switch>
+        </div>
+        {/* <Route path="/f104" exact component={F104} /> */}
       </div>
-    </div>
+    </Switch>
   );
 };

@@ -1,9 +1,21 @@
 import React from "react";
+import classes from "./Table.module.css";
 
-export const Table = ({ title, handler, value }) => {
+export const Table = ({ handler }) => {
   return (
-    <input onChange={handler} value={value}>
-      {title}
-    </input>
+    <table className={classes.listOfPackages}>
+      <caption>Приписанные отправления</caption>
+      <thead>
+        <tr>
+          <th>№</th>
+          <th>ШК отправления</th>
+          <th>Вид отправления</th>
+          <th>Индекс приписки</th>
+          <th>Масса</th>
+          <th>Стоимость</th>
+        </tr>
+      </thead>
+      <tbody> {handler()}</tbody>
+    </table>
   );
 };

@@ -1,68 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
+import { createEvent, createStore } from "effector";
 import { useStore } from "effector-react";
-import classes from "./Registration.module.css";
-import { enteringBarcode, $packageList } from "./model";
+import { F104 } from "./../F104";
 import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
-import * as UI from "./ui";
+import { TableRegistration } from "./ui/organisms/TableRegistration";
+
+//Component dialog state
+export const showComponentDialog = createEvent("showComponent");
+const $componentDialogIsActive = createStore(false).on(showComponentDialog, (state, _) => !state);
+$componentDialogIsActive.watch((s) => console.log(s));
 
 export const Registration = () => {
-  const packageList = useStore($packageList);
-  const [barcode, setBarcode] = useState(null);
-  const addPackage = () => {
-    /**
-     * TODO
-     * сделать валидацию поля(возможно вообще в форму вынести все!!)
-     */
-    const data = barcode ? { barcode: `${barcode}` } : { barcode: "17095247999439" };
+  const componentDialogIsActive = useStore($componentDialogIsActive);
 
-    enteringBarcode(data);
-  };
-
-  const onChangeInput = (e) => {
-    setBarcode(e.target.value);
-  };
-
-  //формирование списка приписанных отправлений
-  const preparePackList = () => {
-    if (Object.keys(packageList).length !== 0) {
-      return Object.keys(packageList).map((pack, index) => (
-        <tr key={`package${index}`}>
-          <td className={classes.tableCell}>{+index + 1}</td>
-          <td className={classes.tableCell}>{pack}</td>
-          <td className={classes.tableCell}>{packageList[pack].name}</td>
-          <td className={classes.tableCell}>170044</td>
-          <td className={classes.tableCell}>{packageList[pack].weight}</td>
-          <td className={classes.tableCell}>{packageList[pack].paynds}</td>
-        </tr>
-      ));
-    }
-    return null;
+  const showF104 = () => {
+    showComponentDialog();
   };
 
   return (
     <div>
+      {componentDialogIsActive ? <F104 /> : null}
       <HeaderRegistration />
-
+      <hr />
+      <TableRegistration />
       <hr />
 
-      <input type="text" onChange={onChangeInput}></input>
-      <UI.Button title="Приписать" handler={addPackage} />
-      <hr />
-
-      <table className={classes.listOfPackages}>
-        <caption>Приписанные отправления</caption>
-        <thead>
-          <tr>
-            <th>№</th>
-            <th>ШК отправления</th>
-            <th>Вид отправления</th>
-            <th>Индекс приписки</th>
-            <th>Масса</th>
-            <th>Стоимость</th>
-          </tr>
-        </thead>
-        <tbody> {preparePackList()}</tbody>
-      </table>
+      <button onClick={showF104}>hiiiii</button>
     </div>
   );
 };

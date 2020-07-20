@@ -1,11 +1,9 @@
 import { createStore, createEffect, createEvent, guard, sample, forward } from "effector";
-import { $selectedAbonBox, $destinationIndex } from "./ui";
+import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
 const trackingURL = "http://10.106.13.10:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 
-// const rest =
-//   "https://tariff.pochta.ru/tariff/v1/calculate?jsonobject=23020&from=170044&to=111538&weight=441&closed=1&sumoc=10000&sumin=100000&sum_month=100000000&date=20200630";
-//p
+//запрашиваемый ШК
 const enteringBarcode = createEvent("barcdode");
 const $barcode = createStore("").on(enteringBarcode, (_, payload) => payload.barcode);
 //$barcode.watch((s) => console.log("barcode: " + s));
@@ -39,7 +37,6 @@ const addDeclaredValue = createEvent("addDeclaredValue");
 guard({
   source: fetchFromTrackingFx.doneData,
   filter: (payload) => {
-    console.log(payload);
     return +payload.ItemParameters.MailCtg.Id !== 3;
   },
   target: addDeclaredValue,
