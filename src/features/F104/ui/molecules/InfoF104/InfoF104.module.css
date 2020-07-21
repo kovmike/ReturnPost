@@ -1,0 +1,36 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.line {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+.underlined {
+  text-decoration: underline;
+}
+.withDescription {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: flex-start; */
+  align-items: center;
+}
+.description {
+  font-size: 12px;
+}
+.divUnderlined {
+  border-bottom: 1px solid black;
+  width: 100%;
+  text-align: center;
+  /* padding-right: 10%; */
+}
+.bold {
+  font-weight: 700;
+}
