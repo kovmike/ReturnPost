@@ -5,6 +5,7 @@
   justify-content: center;
   margin-left: 50px;
   margin-right: 50px;
+  padding-top: 30px;
 }
 .headSmallFont {
   font-size: 12px;
@@ -44,4 +45,5 @@
 }
 .aviatariff {
   text-align: right;
+  margin-right: 60px;
 }

@@ -2,3 +2,13 @@
   width: 1056px;
   min-height: 400px;
 }
+
+@media print {
+  .closeBtn {
+    display: none;
+  }
+
+  .dialogForm {
+    border: none;
+  }
+}

@@ -1,0 +1,46 @@
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin: 0 50px 0 50px;
+  padding-top: 40px;
+}
+.line {
+  display: flex;
+  flex-direction: row;
+}
+.who {
+  width: 100px;
+}
+.withDescription {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+}
+.divUnderlined {
+  border-bottom: 1px solid black;
+  width: 700px;
+  text-align: center;
+  height: 22px;
+}
+.description {
+  font-size: 12px;
+}
+
+.names {
+  width: 80%;
+}
+
+.stamp {
+  width: 13%;
+}
+
+.blankStamp {
+  height: 120px;
+  border: 1px solid black;
+}
+.stampDescription {
+  text-align: center;
+  font-size: 10px;
+}

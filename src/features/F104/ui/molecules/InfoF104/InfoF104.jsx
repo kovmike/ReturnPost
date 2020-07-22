@@ -17,24 +17,26 @@ export const InfoF104 = () => {
         <label className={classes.bold}>От:&nbsp;</label>
         <label className={classes.underlined}> &nbsp;&nbsp;21.07.2020&nbsp;&nbsp; </label>
       </div>
-      <div className={classes.line}>
-        <label className={classes.bold}>Выданных в:&nbsp;</label>
-        <div className={classes.withDescription}>
-          <div className={classes.divUnderlined}>Тверской почтамт</div>
-          <div className={classes.description}>(наименование объекта почтовой связи места вручения)</div>
+      <div className={classes.names}>
+        <div className={classes.line}>
+          <label className={classes.bold}>Выданных в :&nbsp;</label>
+          <div className={classes.withDescription}>
+            <div className={classes.divUnderlined}>Тверской почтамт</div>
+            <div className={classes.description}>(наименование объекта почтовой связи места вручения)</div>
+          </div>
         </div>
-      </div>
-      <div className={classes.line}>
-        <label className={classes.bold}>Получатель :&nbsp;</label>
-        <div className={classes.withDescription}>
-          <div className={classes.divUnderlined}>ООО Всякхерываываываываываываыня</div>
-          <div className={classes.description}>(наименование организации)</div>
+        <div className={classes.line}>
+          <label className={classes.bold}>Получатель :&nbsp;</label>
+          <div className={classes.withDescription}>
+            <div className={classes.divUnderlined}>ООО Всякхерываываываываываываыня</div>
+            <div className={classes.description}>(наименование организации)</div>
+          </div>
         </div>
-      </div>
-      <div className={classes.line}>
-        <div className={classes.withDescription}>
-          <div className={classes.divUnderlined}></div>
-          <div className={classes.description}>(адрес)</div>
+        <div className={classes.line}>
+          <div className={classes.withDescription}>
+            <div className={classes.divUnderlined}></div>
+            <div className={classes.description}>(адрес)</div>
+          </div>
         </div>
       </div>
     </div>
