@@ -12,10 +12,10 @@ const $destinationIndex = restore(pickDestinationIndex, 0);
 const toFetchAbonBox = createEvent("toFetchAbonBox");
 //получение списка а/я из БД
 const fetchAbonBoxListFx = createEffect("AbonBox", {
-  handler: async (payload) => {
+  handler: async () => {
     return fetch(trackingURL, {
       method: "POST",
-      body: JSON.stringify({ destination: "db", queryString: payload }),
+      body: JSON.stringify({ destination: "db", queryParameters: { table: "firms" } }),
     }).then((r) => r.json());
   },
 });

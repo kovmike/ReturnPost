@@ -7,7 +7,7 @@ export const Navbar = () => {
     <div className={classes.wrapper}>
       <ul className={classes.menu}>
         <li>
-          <Link className={classes.menuItem} to="/">
+          <Link className={classes.menuItem} to="/registration">
             Приписка
           </Link>
         </li>
