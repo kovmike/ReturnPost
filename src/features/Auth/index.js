@@ -1,2 +1,2 @@
 export { Auth } from "./Auth";
-export { $loggedUser } from "./model";
+export { $loggedUser, checkStoredUserFx } from "./model";

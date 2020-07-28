@@ -85,7 +85,7 @@ sample({
     for (let param in urlParameters) {
       url += urlParameters[param];
     }
-
+    console.log(url);
     return url;
   },
   target: fetchFromTarifficatorFx,
@@ -107,8 +107,13 @@ sample({
     return {
       [barcode]: {
         name: tariffData.name,
-        paynds: tariffData.paynds / 100,
+        destinationIndex: tariffData.to,
         weight: tariffData.weight,
+        sumoc: tariffData.sumoc / 100,
+        sumCover: "0",
+        shipmentMethod: tariffData.transname,
+        aviaTariff: "0",
+        paynds: tariffData.paynds / 100,
       },
     };
   },

@@ -7,7 +7,7 @@ import classes from "./TableRegistration.module.css";
 
 const TableRegistration = () => {
   const packageList = useStore($packageList);
-  const destinationIndex = useStore($destinationIndex);
+  // const destinationIndex = useStore($destinationIndex);
   const [barcode, setBarcode] = useState(null);
 
   const onChangeInput = (e) => {
@@ -30,10 +30,14 @@ const TableRegistration = () => {
       return Object.keys(packageList).map((pack, index) => (
         <tr key={`package${index}`}>
           <td className={classes.tableCell}>{+index + 1}</td>
-          <td className={classes.tableCell}>{pack}</td>
           <td className={classes.tableCell}>{packageList[pack].name}</td>
-          <td className={classes.tableCell}>{destinationIndex}</td>
+          <td className={classes.tableCell}>{pack}</td>
+          <td className={classes.tableCell}>{packageList[pack].destinationIndex}</td>
           <td className={classes.tableCell}>{packageList[pack].weight}</td>
+          <td className={classes.tableCell}>{packageList[pack].sumoc}</td>
+          <td className={classes.tableCell}>{packageList[pack].sumCover}</td>
+          <td className={classes.tableCell}>{packageList[pack].shipmentMethod}</td>
+          <td className={classes.tableCell}>{packageList[pack].aviaTariff}</td>
           <td className={classes.tableCell}>{packageList[pack].paynds}</td>
         </tr>
       ));

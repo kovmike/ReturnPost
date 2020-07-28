@@ -1,16 +1,25 @@
 import React from "react";
 import { useState } from "react";
-import { setLoggedUser } from "./model";
+import { setNewLoggedUser, $loggedUser } from "./model";
+import { useHistory } from "react-router-dom";
+import { useEffect } from "react";
+import { useStore } from "effector-react";
 
-export const Auth = () => {
+export const Auth = ({ history }) => {
   const [userId, setUserId] = useState("");
+  const loggedUser = useStore($loggedUser);
+  history = useHistory();
+  //пушим в хистори урл приписки, только после того как изменился loggedUser
+  useEffect(() => {
+    if (loggedUser) history.push("/registration");
+  }, [history, loggedUser]);
 
   const changeInput = (e) => {
     setUserId(e.target.value);
   };
 
   const authSubmit = () => {
-    setLoggedUser(userId);
+    setNewLoggedUser(userId);
   };
 
   return (

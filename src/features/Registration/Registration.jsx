@@ -8,7 +8,7 @@ import { TableRegistration } from "./ui/organisms/TableRegistration";
 //Component dialog state
 export const showComponentDialog = createEvent("showComponent");
 const $componentDialogIsActive = createStore(false).on(showComponentDialog, (state, _) => !state);
-$componentDialogIsActive.watch((s) => console.log(s));
+//$componentDialogIsActive.watch((s) => console.log(s));
 
 export const Registration = () => {
   const componentDialogIsActive = useStore($componentDialogIsActive);
@@ -24,7 +24,7 @@ export const Registration = () => {
       <hr />
       <TableRegistration />
       <hr />
-
+      {/* временная кнопка */}
       <button onClick={showF104}>hiiiii</button>
     </div>
   );
