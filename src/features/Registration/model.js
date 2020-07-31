@@ -1,7 +1,50 @@
-import { createStore, createEffect, createEvent, guard, sample, forward } from "effector";
-import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
+import { createStore, createEffect, createEvent, guard, sample, forward, restore } from "effector";
+//import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
 const trackingURL = "http://10.106.13.10:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
+
+////Шапка регистрации отправления
+
+//запись индекса приписки
+const $listofDestinationIndexes = createStore([170044, 170044]); //пока Старый не сказал второй индекс, будут 2 одинаковых
+const pickDestinationIndex = createEvent("selectIndex");
+const $destinationIndex = restore(pickDestinationIndex, 0);
+//$destinationIndex.watch((s) => console.log(s));
+
+//формирование списка абонентских ящиков
+const toFetchAbonBox = createEvent("toFetchAbonBox");
+//получение списка а/я из БД
+const fetchAbonBoxListFx = createEffect("AbonBox", {
+  handler: async () => {
+    return fetch(trackingURL, {
+      method: "POST",
+      body: JSON.stringify({ destination: "db", queryParameters: { table: "firms" } }),
+    }).then((r) => r.json());
+  },
+});
+
+forward({
+  from: toFetchAbonBox,
+  to: fetchAbonBoxListFx,
+});
+
+const $abonBoxList = createStore([]).on(fetchAbonBoxListFx.doneData, (_, payload) => {
+  return payload;
+});
+//$abonBoxList.watch((s) => console.log(s));
+
+//запись выбранного а/я
+const selectAbonBox = createEvent("selectAbonBox");
+const resetSelectedAbonBox = createEvent("resetAbonBox");
+const $selectedAbonBox = createStore({}).reset(resetSelectedAbonBox);
+//$selectedAbonBox.watch((s) => console.log(s));
+
+sample({
+  source: $abonBoxList,
+  clock: selectAbonBox,
+  fn: (list, abonBox) => list.filter((item) => item.abonentbox === abonBox),
+  target: $selectedAbonBox,
+});
 
 //запрашиваемый ШК
 const enteringBarcode = createEvent("barcdode");
@@ -107,11 +150,12 @@ sample({
     return {
       [barcode]: {
         name: tariffData.name,
-        destinationIndex: tariffData.to,
+        typ: tariffData.typ,
+        destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
         weight: tariffData.weight,
         sumoc: tariffData.sumoc / 100,
         sumCover: "0",
-        shipmentMethod: tariffData.transname,
+        shipmentMethod: tariffData.transname ?? "наземно",
         aviaTariff: "0",
         paynds: tariffData.paynds / 100,
       },
@@ -121,4 +165,16 @@ sample({
 });
 
 /***************************************************** */
-export { $packageList, enteringBarcode };
+
+export {
+  $packageList,
+  enteringBarcode,
+  $listofDestinationIndexes,
+  pickDestinationIndex,
+  $destinationIndex,
+  $abonBoxList,
+  toFetchAbonBox,
+  $selectedAbonBox,
+  selectAbonBox,
+  resetSelectedAbonBox,
+};

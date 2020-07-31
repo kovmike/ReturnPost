@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "cloc": "^2.5.1",
     "effector": "^20.17.2",
     "effector-react": "^20.8.0",
     "forest": "^0.16.1",

@@ -2,7 +2,15 @@ import React from "react";
 
 import classes from "./DiffF104.module.css";
 
-export const DiffF104 = () => {
+export const DiffF104 = ({ packageList }) => {
+  const dividePackByClass = (packType, packTransName) => {
+    let oneTypePackList = Object.keys(packageList).reduce((res, pack) => {
+      return packageList[pack].typ === packType ? { ...res, pack: packageList[pack] } : res;
+    }, {});
+
+    return Object.keys(oneTypePackList).length;
+  };
+  console.log(packageList);
   return (
     <div className={classes.wrapper}>
       <div className={classes.headSmallFont}>из них</div>
@@ -41,7 +49,7 @@ export const DiffF104 = () => {
         <div className={classes.currency}>рублей(без НДС)</div>
       </div>
       <div className={classes.line}>
-        <div className={classes.count}>0</div>
+        <div className={classes.count}>{dividePackByClass(23, 0)}</div>
         <div className={classes.classRPO}>посылок он-лайн, на сумму</div>
         <div className={classes.sum}>0</div>
         <div className={classes.currency}>рублей(без НДС)</div>

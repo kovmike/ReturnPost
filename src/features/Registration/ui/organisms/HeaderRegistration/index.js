@@ -8,7 +8,7 @@ import {
   $selectedAbonBox,
   selectAbonBox,
   resetSelectedAbonBox,
-} from "./model";
+} from "./../../../model.js";
 import { DestIndex, AbonentBox } from "./../../molecules";
 
 export const HeaderRegistration = () => {

@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./InfoF104.module.css";
 // import { Label } from "../../../../../ui";
 
-export const InfoF104 = () => {
+export const InfoF104 = ({ abonBox }) => {
   return (
     <div className={classes.wrapper}>
       <div className={classes.line}>
@@ -28,7 +28,7 @@ export const InfoF104 = () => {
         <div className={classes.line}>
           <label className={classes.bold}>Получатель :&nbsp;</label>
           <div className={classes.withDescription}>
-            <div className={classes.divUnderlined}>ООО Всякхерываываываываываываыня</div>
+            <div className={classes.divUnderlined}>{abonBox}</div>
             <div className={classes.description}>(наименование организации)</div>
           </div>
         </div>

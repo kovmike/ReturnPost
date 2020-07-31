@@ -1,10 +1,13 @@
 import React, { useEffect, useRef } from "react";
-
-import { showComponentDialog } from "./../Registration/Registration";
+import { useStore } from "effector-react";
+import { showComponentDialog, $selectedAbonBox, $packageList } from "./../Registration";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, ParcelPostF104, PackagesF104, AuthorF104 } from "./ui";
+
 import classes from "./F104.module.css";
 
 const F104 = () => {
+  const selectedAbonBox = useStore($selectedAbonBox);
+  const packageList = useStore($packageList);
   const dialogRef = useRef(null);
   useEffect(() => {
     if (dialogRef.current) dialogRef.current.showModal();
@@ -14,10 +17,10 @@ const F104 = () => {
     <dialog ref={dialogRef} className={classes.dialogForm}>
       <div className={classes.wrapper}>
         <HeaderF104 waybillBarcode="1234567890128" />
-        <InfoF104 />
+        <InfoF104 abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname} />
         <InfoContainerF104 />
-        <TableF104 />
-        <DiffF104 />
+        <TableF104 packageList={packageList} />
+        <DiffF104 packageList={packageList} />
         <ParcelPostF104 />
         <PackagesF104 />
         <AuthorF104 />

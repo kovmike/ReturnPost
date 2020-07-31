@@ -2,7 +2,30 @@ import React from "react";
 
 import classes from "./TableF104.module.css";
 
-export const TableF104 = () => {
+export const TableF104 = ({ packageList }) => {
+  /**
+   * Экспортировать функцию подготовки списка из фичи регистрации(DRY)
+   */
+  const preparePackList = () => {
+    if (Object.keys(packageList).length !== 0) {
+      return Object.keys(packageList).map((pack, index) => (
+        <tr key={`package${index}`}>
+          <td className={classes.tableCell}>{+index + 1}</td>
+          <td className={classes.tableCell}>{packageList[pack].name}</td>
+          <td className={classes.tableCell}>{pack}</td>
+          <td className={classes.tableCell}>{packageList[pack].destinationIndex}</td>
+          <td className={classes.tableCell}>{packageList[pack].weight}</td>
+          <td className={classes.tableCell}>{packageList[pack].sumoc}</td>
+          <td className={classes.tableCell}>{packageList[pack].sumCover}</td>
+          <td className={classes.tableCell}>{packageList[pack].shipmentMethod}</td>
+          <td className={classes.tableCell}>{packageList[pack].aviaTariff}</td>
+          <td className={classes.tableCell}>{packageList[pack].paynds}</td>
+        </tr>
+      ));
+    }
+    return null;
+  };
+
   return (
     <div className={classes.wrapper}>
       <table className={classes.listOfPackages}>
@@ -20,12 +43,12 @@ export const TableF104 = () => {
             <th>Общая сумма за возврат</th>
           </tr>
         </thead>
-        <tbody> {null}</tbody>
+        <tbody> {preparePackList()}</tbody>
       </table>
       <div className={classes.line}>
         <label className={classes.mark}>Общее количество почтовых отправлений:&nbsp;</label>
         <div className={classes.withDescription}>
-          <div className={classes.divUnderlined}>500</div>
+          <div className={classes.divUnderlined}>{Object.keys(packageList).length}</div>
           <div className={classes.description}>(сумма в цифрах и прописью)</div>
         </div>
       </div>
