@@ -1,13 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import { useStore } from "effector-react";
+import { $loggedUser } from "./../Auth";
 import { showComponentDialog, $selectedAbonBox, $packageList } from "./../Registration";
-import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, ParcelPostF104, PackagesF104, AuthorF104 } from "./ui";
+import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
 
 import classes from "./F104.module.css";
 
 const F104 = () => {
   const selectedAbonBox = useStore($selectedAbonBox);
   const packageList = useStore($packageList);
+  const loggedUser = useStore($loggedUser);
   const dialogRef = useRef(null);
   useEffect(() => {
     if (dialogRef.current) dialogRef.current.showModal();
@@ -21,9 +23,9 @@ const F104 = () => {
         <InfoContainerF104 />
         <TableF104 packageList={packageList} />
         <DiffF104 packageList={packageList} />
-        <ParcelPostF104 />
-        <PackagesF104 />
-        <AuthorF104 />
+        <PackagesF104 type={"бандеролей"} packageList={packageList} />
+        <PackagesF104 type={"посылок"} packageList={packageList} />
+        <AuthorF104 name={loggedUser} />
       </div>
       <button className={classes.closeBtn} onClick={() => showComponentDialog()}>
         {"❌"}

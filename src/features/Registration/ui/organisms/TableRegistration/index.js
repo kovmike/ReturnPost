@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useStore } from "effector-react";
 import { Input, Button, Table } from "./../../atoms";
-import { enteringBarcode, $packageList, $destinationIndex } from "./../../../model.js";
+import { enteringBarcode, $packageList } from "./../../../model.js";
 
 import classes from "./TableRegistration.module.css";
 

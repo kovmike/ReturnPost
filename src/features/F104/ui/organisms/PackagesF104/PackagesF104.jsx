@@ -1,11 +1,11 @@
 import React from "react";
 
-import classes from "./ParcelPostF104.module.css";
+import classes from "./PackagesF104.module.css";
 
-export const ParcelPostF104 = () => {
+export const PackagesF104 = ({ type }) => {
   return (
     <div className={classes.wrapper}>
-      <div className={classes.headSmallFont}>общая сумма платы за возврат бандеролей</div>
+      <div className={classes.headSmallFont}>{`общая сумма платы за возврат ${type}`}</div>
       <div className={classes.line}>
         <div className={classes.withDescription}>
           <div className={classes.divUnderlined}>0(ноль) рублей</div>
