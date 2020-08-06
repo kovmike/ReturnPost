@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useStore } from "effector-react";
 import { $loggedUser } from "./../Auth";
-import { showComponentDialog, $selectedAbonBox, $packageList } from "./../Registration";
+import { showComponentDialog, $selectedAbonBox, $packageList, resetPackageList } from "./../Registration";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
 
 import classes from "./F104.module.css";
@@ -29,6 +29,9 @@ const F104 = () => {
       </div>
       <button className={classes.closeBtn} onClick={() => showComponentDialog()}>
         {"❌"}
+      </button>
+      <button className={classes.closeBtn} onClick={() => resetPackageList()}>
+        {"Типа печать тут будет"}
       </button>
     </dialog>
   );

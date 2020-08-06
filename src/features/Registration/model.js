@@ -1,4 +1,5 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore } from "effector";
+import connectLocalStorage from "effector-localstorage";
 //import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
 const trackingURL = "http://10.106.13.10:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
@@ -133,20 +134,23 @@ sample({
   },
   target: fetchFromTarifficatorFx,
 });
-//const $fromTracking = createStore({}).on(fetchFromTarifficatorFx.doneData, (_, payload) => payload.paynds / 100);
 
-const $packageList = createStore({}).on(addNewPackage, (state, payload) => ({
-  ...state,
-  ...payload,
-}));
-//$packageList.watch((s) => console.log(s));
+//prepared data and work with LS
+const packageListLocalStorage = connectLocalStorage("packageListLS").onError((err) => console.log(err));
+const resetPackageList = createEvent("resetPL");
+const $packageList = createStore(packageListLocalStorage.init({}) || {})
+  .on(addNewPackage, (state, payload) => ({
+    ...state,
+    ...payload,
+  }))
+  .reset(resetPackageList);
+$packageList.watch(packageListLocalStorage);
 
 //добавляем новое отправление в список
 sample({
   source: $barcode,
   clock: fetchFromTarifficatorFx.doneData,
   fn: (barcode, tariffData) => {
-    console.log(tariffData);
     return {
       [barcode]: {
         name: tariffData.name,
@@ -177,4 +181,5 @@ export {
   $selectedAbonBox,
   selectAbonBox,
   resetSelectedAbonBox,
+  resetPackageList,
 };
