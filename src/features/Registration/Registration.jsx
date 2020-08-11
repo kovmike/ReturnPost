@@ -21,7 +21,6 @@ export const Registration = () => {
     showComponentDialog();
   };
   const clearState = () => {
-    console.log("clear");
     resetPackageList();
   };
   return (
@@ -32,7 +31,7 @@ export const Registration = () => {
       <TableRegistration />
       <hr />
       {/* временная кнопка */}
-      <button onClick={showF104}>hiiiii</button>
+      <button onClick={showF104}>f104</button>
       <button onClick={clearState}>clear</button>
     </div>
   );
