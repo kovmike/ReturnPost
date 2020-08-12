@@ -13,3 +13,22 @@
   padding: 0 0 0 10px;
   /* border: 1px solid white; */
 }
+
+.userBlock {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 320px;
+  /* border: 1px solid red; */
+}
+.user {
+}
+
+.out {
+  margin-top: 0px;
+  height: 20px;
+  width: 50px;
+  background: none;
+  color: white;
+  border: 1px solid white;
+}

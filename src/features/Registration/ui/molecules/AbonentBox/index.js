@@ -19,7 +19,7 @@ export const AbonentBox = ({ abonBoxNumber, abonBoxList, pickAbonBox, addToClear
       <Label text={abonBoxNumber ? "Выбран: " : "Выберите А/Я: "} />
       <input ref={abonBoxRef} list="dataListId" onChange={pickAbonBox}></input>
       <datalist id="dataListId">{prepareList(abonBoxList)}</datalist>
-      <Button handler={clearABInput} title="Очистить" />
+      <Button disabled={true} handler={clearABInput} title="Очистить" />
     </div>
   );
 };

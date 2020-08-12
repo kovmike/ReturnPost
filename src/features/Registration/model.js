@@ -1,4 +1,4 @@
-import { createStore, createEffect, createEvent, guard, sample, forward, restore } from "effector";
+import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
 //import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
 const trackingURL = "http://10.106.13.10:8000/";
@@ -143,7 +143,9 @@ const $packageList = createStore(packageListLocalStorage.init({}) || {})
     ...state,
     ...payload,
   }))
-  .reset(resetPackageList);
+  .on(resetPackageList, () => {
+    return {}; //чот с reset не работатет :( хоть issue пиши
+  });
 $packageList.watch(packageListLocalStorage);
 
 //добавляем новое отправление в список
@@ -169,7 +171,18 @@ sample({
 });
 
 /***************************************************** */
+//стор для защиты от ввода ШК при незаполненных индексе назначения и АЯ
+const allow = createEvent("allow");
+const $allowed = createStore(false).on(allow, (_, resolution) => resolution);
 
+forward({
+  from: combine($destinationIndex, $selectedAbonBox, (index, abonbox) => {
+    return index !== 0 && Object.keys(abonbox).length > 0;
+  }),
+  to: allow,
+});
+
+$allowed.watch((s) => console.log(s));
 export {
   $packageList,
   enteringBarcode,
@@ -182,4 +195,5 @@ export {
   selectAbonBox,
   resetSelectedAbonBox,
   resetPackageList,
+  $allowed,
 };

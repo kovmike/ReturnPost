@@ -13,8 +13,14 @@ export const Header = ({ user }) => {
     <div className={classes.headerWrapper}>
       <img src={logo} alt="logo" />
       <div>ВОЗВРАТ!!!!</div>
-      <label>{user}</label>
-      {user !== "Ожидание авторизации" ? <button onClick={logout}>выйти</button> : null}
+      <div className={classes.userBlock}>
+        <label className={classes.user}>{user}</label>
+        {user !== "Ожидание авторизации" ? (
+          <button className={classes.out} onClick={logout}>
+            выйти
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 };
