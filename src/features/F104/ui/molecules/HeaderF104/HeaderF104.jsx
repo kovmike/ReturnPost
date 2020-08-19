@@ -6,7 +6,7 @@ import { Label } from "../../../../../ui";
 export const HeaderF104 = ({ waybillBarcode }) => {
   return (
     <div className={classes.wrapper}>
-      <Barcode value={waybillBarcode} height="70" width="2" format="ean13" />
+      <Barcode value={waybillBarcode} height="70" width="2" format="ITF" />
       <Label text="ф-104.в" />
     </div>
   );

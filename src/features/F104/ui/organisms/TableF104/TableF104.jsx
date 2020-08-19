@@ -1,6 +1,7 @@
 import React from "react";
 
 import classes from "./TableF104.module.css";
+import { digToText } from "../../../model";
 
 export const TableF104 = ({ packageList }) => {
   /**
@@ -48,7 +49,9 @@ export const TableF104 = ({ packageList }) => {
       <div className={classes.line}>
         <label className={classes.mark}>Общее количество почтовых отправлений:&nbsp;</label>
         <div className={classes.withDescription}>
-          <div className={classes.divUnderlined}>{Object.keys(packageList).length}</div>
+          <div className={classes.divUnderlined}>{`${Object.keys(packageList).length} ( ${digToText(
+            Object.keys(packageList).length
+          )} ) шт`}</div>
           <div className={classes.description}>(сумма в цифрах и прописью)</div>
         </div>
       </div>

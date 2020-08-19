@@ -7,7 +7,7 @@ const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 ////Шапка регистрации отправления
 
 //запись индекса приписки
-const $listofDestinationIndexes = createStore([170044, 170044]); //пока Старый не сказал второй индекс, будут 2 одинаковых
+const $listofDestinationIndexes = createStore([170044, 170963]); //пока Старый не сказал второй индекс, будут 2 одинаковых
 const pickDestinationIndex = createEvent("selectIndex");
 const $destinationIndex = restore(pickDestinationIndex, 0);
 //$destinationIndex.watch((s) => console.log(s));
@@ -164,6 +164,8 @@ sample({
         shipmentMethod: tariffData.transname ?? "наземно",
         aviaTariff: "0",
         paynds: tariffData.paynds / 100,
+        pay: tariffData.pay / 100,
+        nds: tariffData.nds / 100,
       },
     };
   },
@@ -182,7 +184,6 @@ forward({
   to: allow,
 });
 
-$allowed.watch((s) => console.log(s));
 export {
   $packageList,
   enteringBarcode,

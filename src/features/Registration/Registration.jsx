@@ -5,6 +5,7 @@ import { F104 } from "./../F104";
 import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
 import { TableRegistration } from "./ui/organisms/TableRegistration";
 import { resetPackageList } from "./model";
+import { generate } from "../F104/model";
 
 //Component dialog state
 /**
@@ -18,6 +19,7 @@ export const Registration = () => {
   const componentDialogIsActive = useStore($componentDialogIsActive);
 
   const showF104 = () => {
+    generate();
     showComponentDialog();
   };
   const clearState = () => {
@@ -30,7 +32,7 @@ export const Registration = () => {
       <hr />
       <TableRegistration />
       <hr />
-      {/* временная кнопка */}
+      {/* временные кнопка */}
       <button onClick={showF104}>f104</button>
       <button onClick={clearState}>clear</button>
     </div>
