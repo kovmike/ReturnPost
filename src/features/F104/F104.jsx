@@ -1,7 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { useStore } from "effector-react";
 import { $loggedUser } from "./../Auth";
-import { showComponentDialog, $selectedAbonBox, $packageList, resetPackageList } from "./../Registration";
+import {
+  showComponentDialog,
+  $selectedAbonBox,
+  $packageList,
+  resetPackageList,
+  $stamp,
+  $container,
+} from "./../Registration";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
 import { $f104Barcode } from "./model";
 
@@ -12,6 +19,8 @@ const F104 = () => {
   const packageList = useStore($packageList);
   const loggedUser = useStore($loggedUser);
   const f014Barcode = useStore($f104Barcode);
+  const container = useStore($container);
+  const stamp = useStore($stamp);
   const dialogRef = useRef(null);
   useEffect(() => {
     if (dialogRef.current) dialogRef.current.showModal();
@@ -36,7 +45,7 @@ const F104 = () => {
       <div className={classes.wrapper}>
         <HeaderF104 waybillBarcode={f014Barcode} />
         <InfoF104 abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname} />
-        <InfoContainerF104 />
+        <InfoContainerF104 container={container} stamp={stamp} />
         <TableF104 packageList={packageList} />
         <DiffF104 packageList={packageList} />
         <PackagesF104

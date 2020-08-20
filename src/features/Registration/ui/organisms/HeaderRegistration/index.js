@@ -8,8 +8,10 @@ import {
   $selectedAbonBox,
   selectAbonBox,
   resetSelectedAbonBox,
+  enteredContainerNum,
+  enteredStampNum,
 } from "./../../../model.js";
-import { DestIndex, AbonentBox } from "./../../molecules";
+import { DestIndex, AbonentBox, ContainerNum } from "./../../molecules";
 
 export const HeaderRegistration = () => {
   const listofDestinationIndexes = useStore($listofDestinationIndexes);
@@ -27,6 +29,16 @@ export const HeaderRegistration = () => {
     //проверяем длину инпута, только после выделения нужного а/я вызываем евент записи в стор выбранного ая
     if (e.target.value.length > 5) selectAbonBox(e.target.value.split(":")[0].trim());
   };
+
+  const enterContainerNum = (e) => {
+    //console.log(e.target.value);
+    enteredContainerNum(e.target.value);
+  };
+
+  const enterStampNum = (e) => {
+    enteredStampNum(e.target.value);
+  };
+
   return (
     <>
       <DestIndex
@@ -43,6 +55,8 @@ export const HeaderRegistration = () => {
         }}
         addToClearButton={resetSelectedAbonBox}
       />
+      <ContainerNum handler={enterContainerNum} text={"Номер контейнера: "} />
+      <ContainerNum handler={enterStampNum} text={"Номер печати: "} />
     </>
   );
 };

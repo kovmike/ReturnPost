@@ -1,12 +1,13 @@
-// import React from "react";
+import React from "react";
 
-// import { Input, Button } from "../../atoms";
+import { Input, Label } from "../../atoms";
 
-// export const ContainerNum = ({ arrOfIndexes, handler }) => {
-//   return (
-//     <div>
-//       <Input handler={()=>{}} onEnterPress={()=>{}} disabled={true} value  />
-//       <Button arr={arrOfIndexes} handler={handler} />
-//     </div>
-//   );
-// };
+export const ContainerNum = ({ handler, value, text }) => {
+  return (
+    <div>
+      <Label text={text} />
+      <Input handler={handler} onEnterPress={() => {}} disabled={true} value={value} />
+      {/* <Button title={"Ввести"} disabled={false} handler={handler} /> */}
+    </div>
+  );
+};

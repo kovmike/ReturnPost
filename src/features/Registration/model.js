@@ -7,7 +7,7 @@ const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 ////Шапка регистрации отправления
 
 //запись индекса приписки
-const $listofDestinationIndexes = createStore([170044, 170963]); //пока Старый не сказал второй индекс, будут 2 одинаковых
+const $listofDestinationIndexes = createStore([170044, 170044]); //пока Старый не сказал второй индекс, будут 2 одинаковых
 const pickDestinationIndex = createEvent("selectIndex");
 const $destinationIndex = restore(pickDestinationIndex, 0);
 //$destinationIndex.watch((s) => console.log(s));
@@ -46,6 +46,14 @@ sample({
   fn: (list, abonBox) => list.filter((item) => item.abonentbox === abonBox),
   target: $selectedAbonBox,
 });
+
+//номер контейнера
+export const enteredContainerNum = createEvent();
+export const $container = createStore("").on(enteredContainerNum, (_, container) => container);
+
+//номер пломбы
+export const enteredStampNum = createEvent();
+export const $stamp = createStore("").on(enteredStampNum, (_, stamp) => stamp);
 
 //запрашиваемый ШК
 const enteringBarcode = createEvent("barcdode");

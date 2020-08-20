@@ -7,6 +7,16 @@ import { useStore } from "effector-react";
 
 export const InfoF104 = ({ abonBox }) => {
   const barcode = useStore($f104Barcode);
+  const formatingDate = () => {
+    const now = new Date();
+    //.match(/[0-9\-]+(?=T)/g));
+
+    return [
+      now.getDate(),
+      now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : now.getMonth() + 1,
+      now.getFullYear(),
+    ].join(".");
+  };
   return (
     <div className={classes.wrapper}>
       <LineInfoHeadF104 classes={classes} labelText={"СПИСОК № "} data={barcode} />
@@ -15,7 +25,7 @@ export const InfoF104 = ({ abonBox }) => {
         labelText={"возвращенных почтовых отправлений КАТЕГОРИЯ :"}
         data={`СТАНДАРТНЫЕ`}
       />
-      <LineInfoHeadF104 classes={classes} labelText={"От :"} data={`21.07.2020`} />
+      <LineInfoHeadF104 classes={classes} labelText={"От :"} data={formatingDate()} />
 
       <div className={classes.names}>
         <LineInfoF104
