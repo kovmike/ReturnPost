@@ -10,13 +10,20 @@ import {
   resetSelectedAbonBox,
   enteredContainerNum,
   enteredStampNum,
+  $container,
+  $stamp,
+  $destinationIndex,
 } from "./../../../model.js";
 import { DestIndex, AbonentBox, ContainerNum } from "./../../molecules";
 
 export const HeaderRegistration = () => {
   const listofDestinationIndexes = useStore($listofDestinationIndexes);
+  const destinationIndex = useStore($destinationIndex);
   const abonBoxList = useStore($abonBoxList);
   const selectedAbonBox = useStore($selectedAbonBox);
+  const container = useStore($container);
+  const stamp = useStore($stamp);
+
   //запуск формирования списка абонентских ящиком
   useEffect(() => {
     toFetchAbonBox();
@@ -46,17 +53,19 @@ export const HeaderRegistration = () => {
         handler={(e) => {
           selectDestinationIndex(e);
         }}
+        value={destinationIndex}
       />
       <AbonentBox
         abonBoxNumber={selectedAbonBox[0]?.abonentbox}
+        firmName={selectedAbonBox[0]?.firmname}
         abonBoxList={abonBoxList}
         pickAbonBox={(e) => {
           pickAbonBox(e);
         }}
         addToClearButton={resetSelectedAbonBox}
       />
-      <ContainerNum handler={enterContainerNum} text={"Номер контейнера: "} />
-      <ContainerNum handler={enterStampNum} text={"Номер печати: "} />
+      <ContainerNum handler={enterContainerNum} text={"Номер контейнера: "} value={container} />
+      <ContainerNum handler={enterStampNum} text={"Номер печати: "} value={stamp} />
     </>
   );
 };

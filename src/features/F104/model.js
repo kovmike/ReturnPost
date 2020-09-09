@@ -49,7 +49,7 @@ sample({
   target: $f104Barcode,
 });
 
-$f104Barcode.watch((s) => console.log(s));
+//$f104Barcode.watch((s) => console.log(s));
 
 //пеервод цифр в строки
 export const digToText = (dig) => {

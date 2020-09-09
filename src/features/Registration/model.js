@@ -48,12 +48,12 @@ sample({
 });
 
 //номер контейнера
-export const enteredContainerNum = createEvent();
-export const $container = createStore("").on(enteredContainerNum, (_, container) => container);
+const enteredContainerNum = createEvent();
+const $container = createStore("").on(enteredContainerNum, (_, container) => container);
 
 //номер пломбы
-export const enteredStampNum = createEvent();
-export const $stamp = createStore("").on(enteredStampNum, (_, stamp) => stamp);
+const enteredStampNum = createEvent();
+const $stamp = createStore("").on(enteredStampNum, (_, stamp) => stamp);
 
 //запрашиваемый ШК
 const enteringBarcode = createEvent("barcdode");
@@ -205,4 +205,8 @@ export {
   resetSelectedAbonBox,
   resetPackageList,
   $allowed,
+  enteredContainerNum,
+  $container,
+  enteredStampNum,
+  $stamp,
 };

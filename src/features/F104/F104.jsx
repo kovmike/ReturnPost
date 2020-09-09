@@ -50,13 +50,13 @@ const F104 = () => {
         <DiffF104 packageList={packageList} />
         <PackagesF104
           type={"бандеролей"}
-          sumWithOutNds={sumForPackages(packageList).parselPay}
+          sumWithOutNds={Math.round(sumForPackages(packageList).parselPay * 100) / 100}
           nds={sumForPackages(packageList).parselNds}
         />
         <PackagesF104
           type={"посылок"}
-          sumWithOutNds={sumForPackages(packageList).packagesPay}
-          nds={sumForPackages(packageList).packagesNds}
+          sumWithOutNds={Math.round(sumForPackages(packageList).packagesPay * 100) / 100} //чтобы избежать кривых операций сложения типа 0.1+0.2 = 0.30000000000000000000000000004
+          nds={Math.round(sumForPackages(packageList).packagesNds * 100) / 100}
         />
         <AuthorF104 name={loggedUser} />
       </div>
