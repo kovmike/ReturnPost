@@ -12,7 +12,6 @@
     "effector": "^20.17.2",
     "effector-localstorage": "^0.5.3",
     "effector-react": "^20.8.0",
-    "forest": "^0.16.1",
     "formik": "^2.1.5",
     "history": "^5.0.0",
     "is-regexp": "^2.1.0",

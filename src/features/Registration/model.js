@@ -2,6 +2,8 @@ import { createStore, createEffect, createEvent, guard, sample, forward, restore
 import connectLocalStorage from "effector-localstorage";
 //import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
 const trackingURL = "http://10.106.13.10:8000/";
+//const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
+
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 
 ////Шапка регистрации отправления
@@ -54,6 +56,7 @@ const $container = createStore("").on(enteredContainerNum, (_, container) => con
 //номер пломбы
 const enteredStampNum = createEvent();
 const $stamp = createStore("").on(enteredStampNum, (_, stamp) => stamp);
+//$stamp.watch((s) => console.log(s));
 
 //запрашиваемый ШК
 const enteringBarcode = createEvent("barcdode");
@@ -192,6 +195,37 @@ forward({
   to: allow,
 });
 
+/****************************************
+ *добавление в БД отправления
+ */
+//TODO      ОПИСАТЬ СОБЫТИЯ НИЖЕ
+const insertFx = createEffect("insert", {
+  handler: async (payload) => {
+    return fetch(trackingURL, {
+      method: "POST",
+      body: JSON.stringify({ destination: "crud", queryParameters: { action: "INSERT", ...payload } }),
+    }).then((r) => r.json());
+  },
+});
+
+sample({
+  source: combine({ $selectedAbonBox, $container, $stamp }, ({ $selectedAbonBox, $container, $stamp }) => ({
+    abonBoxId: $selectedAbonBox[0]?.id ?? "",
+    container: $container,
+    stamp: $stamp,
+  })),
+  clock: addNewPackage,
+  fn: (container, pack) => {
+    const [destructPack] = Object.entries(pack);
+    return { ...container, ...{ barcode: destructPack[0], ...destructPack[1] } };
+  },
+  target: insertFx,
+});
+
+/****************************
+ *
+ */
+
 export {
   $packageList,
   enteringBarcode,
@@ -209,4 +243,5 @@ export {
   $container,
   enteredStampNum,
   $stamp,
+  insertFx,
 };

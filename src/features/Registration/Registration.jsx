@@ -4,7 +4,7 @@ import { useStore } from "effector-react";
 import { F104 } from "./../F104";
 import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
 import { TableRegistration } from "./ui/organisms/TableRegistration";
-import { resetPackageList } from "./model";
+import { resetPackageList, insertFx } from "./model";
 import { generate } from "../F104/model";
 
 //Component dialog state
@@ -25,6 +25,10 @@ export const Registration = () => {
   const clearState = () => {
     resetPackageList();
   };
+  const insert = () => {
+    insertFx();
+  };
+
   return (
     <div>
       {componentDialogIsActive ? <F104 /> : null}
@@ -32,9 +36,10 @@ export const Registration = () => {
       <hr />
       <TableRegistration />
       <hr />
-      {/* временные кнопка */}
+      {/* временные кнопки */}
       <button onClick={showF104}>f104</button>
       <button onClick={clearState}>clear</button>
+      <button onClick={insert}>insert</button>
     </div>
   );
 };

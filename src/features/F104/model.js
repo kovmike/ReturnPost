@@ -1,4 +1,4 @@
-import { createEffect, createEvent, sample, createStore, combine, forward } from "effector";
+import { createEffect, createEvent, sample, createStore, forward } from "effector";
 //import { $destinationIndex } from "./../Registration/model";
 
 //запрос последней накладной, получение порядкового номера
