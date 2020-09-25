@@ -198,7 +198,8 @@ forward({
 /****************************************
  *добавление в БД отправления
  */
-//TODO      ОПИСАТЬ СОБЫТИЯ НИЖЕ
+//эффект для вставки
+//отравляется запрос на сервер с направление crud и экшеном insert
 const insertFx = createEffect("insert", {
   handler: async (payload) => {
     return fetch(trackingURL, {
@@ -208,7 +209,9 @@ const insertFx = createEffect("insert", {
   },
 });
 
+//формирование пакета для отправки на сервер для вставки отправления в БД
 sample({
+  //объединение данных о контейнере, печати и а/я
   source: combine({ $selectedAbonBox, $container, $stamp }, ({ $selectedAbonBox, $container, $stamp }) => ({
     abonBoxId: $selectedAbonBox[0]?.id ?? "",
     container: $container,
@@ -216,9 +219,12 @@ sample({
   })),
   clock: addNewPackage,
   fn: (container, pack) => {
+    //добавляем данные об РПО
     const [destructPack] = Object.entries(pack);
+    console.log({ ...container, ...{ barcode: destructPack[0], ...destructPack[1] } });
     return { ...container, ...{ barcode: destructPack[0], ...destructPack[1] } };
   },
+  //на сервер
   target: insertFx,
 });
 
