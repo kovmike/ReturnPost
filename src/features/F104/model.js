@@ -36,7 +36,6 @@ sample({
   source: $index,
   clock: $numWaybill,
   fn: (index, number) => {
-    console.log(number);
     let barcode = index + numMonth(new Date()) + number;
     return barcode + controlDigit(barcode);
   },
@@ -44,4 +43,4 @@ sample({
 });
 
 //$f104Barcode.watch((s) => console.log(s));
-export { $f104Barcode, generate };
+export { $f104Barcode, generate, $numWaybill };

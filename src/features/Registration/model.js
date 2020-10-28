@@ -1,6 +1,6 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
-//import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
+import { $f104Barcode, generate, $numWaybill } from "../F104/model";
 const trackingURL = "http://10.106.0.253:8000/";
 //const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
 
@@ -79,6 +79,13 @@ const fetchFromTrackingFx = createEffect("tracking", {
 forward({
   from: enteringBarcode,
   to: fetchFromTrackingFx,
+});
+
+//запрос номера накладной
+guard({
+  source: sample($numWaybill, enteringBarcode),
+  filter: (num) => num === 0,
+  target: generate,
 });
 //запрос данных из тарификатора
 const fetchFromTarifficatorFx = createEffect("tarifficator", {
@@ -202,7 +209,6 @@ forward({
 //отравляется запрос на сервер с направление crud и экшеном insert
 const insertFx = createEffect("insert", {
   handler: async (payload) => {
-    console.log(payload);
     return fetch(trackingURL, {
       method: "POST",
       body: JSON.stringify({ destination: "crud", queryParameters: { action: "INSERT", ...payload } }),
@@ -213,16 +219,20 @@ const insertFx = createEffect("insert", {
 //формирование пакета для отправки на сервер для вставки отправления в БД
 sample({
   //объединение данных о контейнере, печати и а/я
-  source: combine({ $selectedAbonBox, $container, $stamp }, ({ $selectedAbonBox, $container, $stamp }) => ({
-    abonBoxId: $selectedAbonBox[0]?.id ?? "",
-    container: $container,
-    stamp: $stamp,
-  })),
+  source: combine(
+    { $selectedAbonBox, $container, $stamp, $f104Barcode },
+    ({ $selectedAbonBox, $container, $stamp, $f104Barcode }) => ({
+      abonBoxId: $selectedAbonBox[0]?.id ?? "",
+      container: $container,
+      stamp: $stamp,
+      waybillbarcode: $f104Barcode,
+    })
+  ),
   clock: addNewPackage,
   fn: (container, pack) => {
     //добавляем данные об РПО
     const [destructPack] = Object.entries(pack);
-    console.log({ ...container, ...{ barcode: destructPack[0], ...destructPack[1] } });
+    //console.log({ ...container, ...{ barcode: destructPack[0], ...destructPack[1] } });
     return { ...container, ...{ barcode: destructPack[0], ...destructPack[1] } };
   },
   //на сервер
