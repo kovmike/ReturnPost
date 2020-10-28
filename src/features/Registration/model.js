@@ -1,7 +1,7 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
 //import { $selectedAbonBox, $destinationIndex } from "./../../index.js";
-const trackingURL = "http://10.106.13.10:8000/";
+const trackingURL = "http://10.106.0.253:8000/";
 //const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
 
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
@@ -202,6 +202,7 @@ forward({
 //отравляется запрос на сервер с направление crud и экшеном insert
 const insertFx = createEffect("insert", {
   handler: async (payload) => {
+    console.log(payload);
     return fetch(trackingURL, {
       method: "POST",
       body: JSON.stringify({ destination: "crud", queryParameters: { action: "INSERT", ...payload } }),

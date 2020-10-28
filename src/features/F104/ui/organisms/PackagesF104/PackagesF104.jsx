@@ -1,6 +1,6 @@
 import React from "react";
 import classes from "./PackagesF104.module.css";
-import { digToText } from "../../../model";
+import { digToText } from "../../../lib/common";
 
 export const PackagesF104 = ({ type, sumWithOutNds, nds }) => {
   const rubAndKop = (count) => {
