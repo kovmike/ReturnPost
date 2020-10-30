@@ -1,5 +1,5 @@
 import React, { createRef } from "react";
-import { Label, Button } from "./../../index";
+import { Label, Button } from "./../../atoms";
 
 export const AbonentBox = ({ abonBoxNumber, firmName, abonBoxList, pickAbonBox, addToClearButton }) => {
   const abonBoxRef = createRef();

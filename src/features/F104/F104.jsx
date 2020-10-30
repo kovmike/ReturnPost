@@ -10,7 +10,7 @@ import {
   $container,
 } from "./../Registration";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
-import { $f104Barcode } from "./model";
+import { $f104Barcode, waybillAdded } from "./model";
 
 import classes from "./F104.module.css";
 
@@ -63,7 +63,13 @@ const F104 = () => {
       <button className={classes.closeBtn} onClick={() => showComponentDialog()}>
         {"❌"}
       </button>
-      <button className={classes.closeBtn} onClick={() => resetPackageList()}>
+      <button
+        className={classes.closeBtn}
+        onClick={() => {
+          waybillAdded();
+          resetPackageList();
+        }}
+      >
         {"Типа печать тут будет"}
       </button>
     </dialog>

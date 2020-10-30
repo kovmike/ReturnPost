@@ -14,8 +14,10 @@ import {
   $stamp,
   $destinationIndex,
 } from "./../../../model.js";
-import { DestIndex, AbonentBox, ContainerNum } from "./../../molecules";
-
+import { DestIndex } from "./../../molecules/DestIndex/index.js";
+import { AbonentBox } from "../../molecules/AbonentBox/index.js";
+import { ContainerNum } from "../../molecules/ContainerNum/index.js";
+//, AbonentBox, ContainerNum
 export const HeaderRegistration = () => {
   const listofDestinationIndexes = useStore($listofDestinationIndexes);
   const destinationIndex = useStore($destinationIndex);

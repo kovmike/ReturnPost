@@ -1,6 +1,7 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
-import { $f104Barcode, generate, $numWaybill } from "../F104/model";
+import { $f104Barcode, generate, $numWaybill, waybillAdded } from "../F104/model";
+import { $loggedUser } from "../Auth/model";
 const trackingURL = "http://10.106.0.253:8000/";
 //const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
 
@@ -21,7 +22,7 @@ const fetchAbonBoxListFx = createEffect("AbonBox", {
   handler: async () => {
     return fetch(trackingURL, {
       method: "POST",
-      body: JSON.stringify({ destination: "db", queryParameters: { table: "firms" } }),
+      body: JSON.stringify({ destination: "abonbox" }),
     }).then((r) => r.json());
   },
 });
@@ -211,7 +212,7 @@ const insertFx = createEffect("insert", {
   handler: async (payload) => {
     return fetch(trackingURL, {
       method: "POST",
-      body: JSON.stringify({ destination: "crud", queryParameters: { action: "INSERT", ...payload } }),
+      body: JSON.stringify({ destination: "rpo", queryParameters: { action: "INSERT", ...payload } }),
     }).then((r) => r.json());
   },
 });
@@ -239,6 +240,31 @@ sample({
   target: insertFx,
 });
 
+//переписать на attach
+const addNewWaybillToDBFx = createEffect(async (payload) => {
+  console.log(payload);
+  return fetch(trackingURL, {
+    method: "POST",
+    body: JSON.stringify({ destination: "waybill", queryParameters: { action: "addnew", ...payload } }),
+  }).then((r) => r.json());
+});
+
+//запись накладной в бд
+sample({
+  source: { $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser },
+  clock: waybillAdded,
+  fn: ({ $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser }) => {
+    return {
+      id: +$numWaybill,
+      barcode: $f104Barcode,
+      printdate: new Date().toLocaleDateString("ru"), //.replace(/\//g, "."),
+      firmid: $selectedAbonBox[0].id,
+      userid: $loggedUser,
+      waybilltype: 12,
+    };
+  },
+  target: addNewWaybillToDBFx,
+});
 /****************************
  *
  */

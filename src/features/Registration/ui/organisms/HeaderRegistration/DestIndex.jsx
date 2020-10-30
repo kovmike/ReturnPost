@@ -1,5 +1,5 @@
 import React from "react";
-import { Label, Select } from "./../../atoms";
+import { Label, Select } from "./../../atoms/index";
 
 export const DestIndex = ({ arrOfIndexes, handler, value }) => {
   return (

@@ -1,5 +1,5 @@
 import { createEffect, createEvent, forward, guard, sample, restore } from "effector";
-const trackingURL = "http://10.106.13.10:8000/";
+const trackingURL = "http://10.106.0.253:8000/";
 
 //просто логаут
 const logOut = createEvent("logOut");
@@ -24,7 +24,7 @@ const fetchUserIDFx = createEffect("fetchUserId", {
   handler: async (payload) => {
     return fetch(trackingURL, {
       method: "POST",
-      body: JSON.stringify({ destination: "db", queryParameters: { table: "users", id: payload } }),
+      body: JSON.stringify({ destination: "users", queryParameters: { id: payload } }),
     }).then((r) => r.json());
   },
 });
@@ -36,7 +36,7 @@ forward({
   from: setNewLoggedUser,
   to: fetchUserIDFx,
 });
-
+setNewLoggedUser.watch((s) => console.log(s));
 //проверяем ответ, если с сервера пришел юзер, то отправляем эти данные в стор $loggedUser
 sample({
   source: guard({
