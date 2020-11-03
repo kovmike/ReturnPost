@@ -1,6 +1,7 @@
 import React from "react";
 
 export const Input = ({ handler, onEnterPress, disabled, value }) => {
+  console.log("input disabled = " + disabled);
   const onEnter = (e) => {
     if (e.charCode === 13) onEnterPress();
   };

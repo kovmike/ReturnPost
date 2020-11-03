@@ -195,6 +195,7 @@ sample({
 //стор для защиты от ввода ШК при незаполненных индексе назначения и АЯ
 const allow = createEvent("allow");
 const $allowed = createStore(false).on(allow, (_, resolution) => resolution);
+//$allowed.watch((s) => console.log(s));
 
 forward({
   from: combine($destinationIndex, $selectedAbonBox, (index, abonbox) => {
@@ -241,15 +242,15 @@ sample({
 });
 
 //переписать на attach
+//запись накладной в бд
 const addNewWaybillToDBFx = createEffect(async (payload) => {
-  console.log(payload);
   return fetch(trackingURL, {
     method: "POST",
     body: JSON.stringify({ destination: "waybill", queryParameters: { action: "addnew", ...payload } }),
   }).then((r) => r.json());
 });
 
-//запись накладной в бд
+//запись накладной в бд(формирование пэйлода для запроса на сервер)
 sample({
   source: { $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser },
   clock: waybillAdded,

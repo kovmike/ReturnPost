@@ -1,6 +1,6 @@
 //to lib
 const formatWaybillNum = (id) => {
-  return "00000".substring(0, 5 - id.toString().length) + id.toString();
+  return "0000000".substring(0, 7 - id.toString().length) + id.toString();
 };
 
 //определение номера месяца (порядковый номер начиная с 01.01.2000, диапазон от 01 до 99)
