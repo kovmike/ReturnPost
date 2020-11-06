@@ -8,15 +8,19 @@ const setNewLoggedUser = createEvent("set new user");
 //если нашли юзера в ЛС
 const setStoredLoggedUser = createEvent("restore user from localStorage");
 
+const $loggedUser = restore(setStoredLoggedUser, false).reset(logOut);
 //проверка ЛС на наличие юзера
 const checkStoredUserFx = createEffect("storedUser", {
   handler: () => {
-    return localStorage.getItem("user");
+    return { userName: localStorage.getItem("userName"), isAdmin: localStorage.getItem("isAdmin") };
   },
 });
+
+const isLogged = $loggedUser.map((user) => !user?.userName);
+//если есть в ЛС
 guard({
   source: checkStoredUserFx.doneData,
-  filter: (user) => user,
+  filter: isLogged,
   target: setStoredLoggedUser,
 });
 
@@ -28,7 +32,6 @@ const fetchUserIDFx = createEffect("fetchUserId", {
     }).then((r) => r.json());
   },
 });
-const $loggedUser = restore(setStoredLoggedUser, false).reset(logOut);
 
 //вход по новым пользователем
 // setLoggedUser запускает fetchUserIDFx с введенными данными
@@ -36,20 +39,23 @@ forward({
   from: setNewLoggedUser,
   to: fetchUserIDFx,
 });
-setNewLoggedUser.watch((s) => console.log(s));
+
 //проверяем ответ, если с сервера пришел юзер, то отправляем эти данные в стор $loggedUser
 sample({
   source: guard({
     source: fetchUserIDFx.doneData,
     filter: (data) => data.length > 0,
   }),
-  fn: (data) => data[0].name,
+  fn: (data) => ({ userName: data[0].name, isAdmin: !!data[0].isadmin }),
   target: $loggedUser,
 });
 
 //смотрим за стором и записываем в локалсторадж имя юзера
 $loggedUser.watch((s) => {
-  if (s) localStorage.setItem("user", s);
+  if (s) {
+    localStorage.setItem("userName", s.userName);
+    localStorage.setItem("isAdmin", s.isAdmin);
+  }
 });
 
 export { $loggedUser, setNewLoggedUser, checkStoredUserFx, logOut };

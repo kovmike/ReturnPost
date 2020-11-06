@@ -1,10 +1,10 @@
 import React from "react";
 import { createEvent, createStore } from "effector";
 import { useStore } from "effector-react";
-import { F104 } from "./../F104";
+import { F104 } from "./../F104/F104.jsx";
 import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
 import { TableRegistration } from "./ui/organisms/TableRegistration";
-import { resetPackageList, insertFx } from "./model";
+import { resetPackageList, insertFx, $stamp } from "./model";
 import { generate } from "../F104/model";
 
 //Component dialog state
@@ -17,8 +17,9 @@ const $componentDialogIsActive = createStore(false).on(showComponentDialog, (sta
 
 export const Registration = () => {
   const componentDialogIsActive = useStore($componentDialogIsActive);
-
+  const stamp = useStore($stamp);
   const showF104 = () => {
+    console.log(stamp);
     generate();
     showComponentDialog();
   };

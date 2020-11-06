@@ -2,11 +2,11 @@ import { createStore, createEffect, createEvent, guard, sample, forward, restore
 import connectLocalStorage from "effector-localstorage";
 import { $f104Barcode, generate, $numWaybill, waybillAdded } from "../F104/model";
 import { $loggedUser } from "../Auth/model";
+
 const trackingURL = "http://10.106.0.253:8000/";
-//const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
-
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
-
+const today = new Date().toLocaleDateString("ru").split(".").reverse().join("-");
+//const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
 ////Шапка регистрации отправления
 
 //запись индекса приписки
@@ -258,7 +258,7 @@ sample({
     return {
       id: +$numWaybill,
       barcode: $f104Barcode,
-      printdate: new Date().toLocaleDateString("ru"), //.replace(/\//g, "."),
+      printdate: today, //.replace(/\//g, "."),
       firmid: $selectedAbonBox[0].id,
       userid: $loggedUser,
       waybilltype: 12,

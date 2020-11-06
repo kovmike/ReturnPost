@@ -8,6 +8,7 @@ import { useStore } from "effector-react";
 export const Auth = ({ history }) => {
   const [userId, setUserId] = useState("");
   const loggedUser = useStore($loggedUser);
+  console.log(loggedUser);
   history = useHistory();
   //пушим в хистори урл приписки, только после того как изменился loggedUser
   useEffect(() => {

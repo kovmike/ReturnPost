@@ -58,7 +58,7 @@ const F104 = () => {
           sumWithOutNds={Math.round(sumForPackages(packageList).packagesPay * 100) / 100} //чтобы избежать кривых операций сложения типа 0.1+0.2 = 0.30000000000000000000000000004
           nds={Math.round(sumForPackages(packageList).packagesNds * 100) / 100}
         />
-        <AuthorF104 name={loggedUser} />
+        <AuthorF104 name={loggedUser.userName} />
       </div>
       <button className={classes.closeBtn} onClick={() => showComponentDialog()}>
         {"❌"}

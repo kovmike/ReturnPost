@@ -14,7 +14,7 @@ export const Header = ({ user }) => {
       <img src={logo} alt="logo" />
       <div>ВОЗВРАТ!!!!</div>
       <div className={classes.userBlock}>
-        <label className={classes.user}>{user}</label>
+        <label className={classes.user}>{user.userName}</label>
         {user !== "Ожидание авторизации" ? (
           <button className={classes.out} onClick={logout}>
             выйти

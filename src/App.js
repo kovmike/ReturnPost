@@ -4,16 +4,18 @@ import { Navbar } from "./ui/organisms/Navbar/Navbar";
 import { routes } from "./ui/common/routes";
 import classes from "./App.module.css";
 import { Switch, Route, Redirect, useHistory } from "react-router-dom";
-import { $loggedUser, Auth, checkStoredUserFx } from "./features/Auth";
+import { $loggedUser, Auth, checkStoredUserFx } from "./features/Auth/";
 import { useStore } from "effector-react";
 
 export const App = ({ history }) => {
   //проверяем наличие юзера в ЛС, результат попадает в гард, и либо ничего не происходит, либо пишется в стор
-  checkStoredUserFx();
+  //checkStoredUserFx();
   const loggedUser = useStore($loggedUser);
+  console.log(loggedUser);
   history = useHistory();
   //при ините проги редиректим сразу на логин, но если юзер есть, то на приписку
   useEffect(() => {
+    checkStoredUserFx();
     if (loggedUser) {
       history.push("/registration");
     } else {
@@ -36,6 +38,7 @@ export const App = ({ history }) => {
               path={route.path}
               exact={route.exact}
               render={() => {
+                route.component();
                 // редирект на логин, если не авторизован пользователь
                 return loggedUser ? route.component() : <Redirect to={{ pathname: "/login" }} />;
               }}

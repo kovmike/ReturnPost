@@ -13,9 +13,9 @@ const Table = ({ handler }) => {
           <th>Тип накладной</th>
         </tr>
       </thead>
-      <tbody> {handler()}</tbody>
+      <tbody> {}</tbody>
     </table>
   );
 };
-
+//<tbody> {handler()}</tbody>
 export { Table };
