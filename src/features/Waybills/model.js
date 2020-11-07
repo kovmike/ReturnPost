@@ -41,7 +41,7 @@ $waybillBarcode
   .on(setSearchingWaybill, (_, waybill) => ({ waybill }))
   .on(searchRPOFx.doneData, (state, waybill) => (waybill === 0 ? state : { waybill }));
 
-$waybillBarcode.watch((s) => console.log(s));
+//$waybillBarcode.watch((s) => console.log(s));
 
 /***** */
 

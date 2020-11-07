@@ -148,47 +148,10 @@ sample({
     for (let param in urlParameters) {
       url += urlParameters[param];
     }
-    console.log(url);
+    //console.log(url);   включить чтобы видкть ссылку тарификатора
     return url;
   },
   target: fetchFromTarifficatorFx,
-});
-
-//prepared data and work with LS
-const packageListLocalStorage = connectLocalStorage("packageListLS").onError((err) => console.log(err));
-const resetPackageList = createEvent("resetPL");
-const $packageList = createStore(packageListLocalStorage.init({}) || {})
-  .on(addNewPackage, (state, payload) => ({
-    ...state,
-    ...payload,
-  }))
-  .on(resetPackageList, () => {
-    return {}; //чот с reset не работатет :( хоть issue пиши
-  });
-$packageList.watch(packageListLocalStorage);
-
-//добавляем новое отправление в список
-sample({
-  source: $barcode,
-  clock: fetchFromTarifficatorFx.doneData,
-  fn: (barcode, tariffData) => {
-    return {
-      [barcode]: {
-        name: tariffData.name,
-        typ: tariffData.typ,
-        destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
-        weight: tariffData.weight,
-        sumoc: tariffData.sumoc / 100,
-        sumCover: "0",
-        shipmentMethod: tariffData.transname ?? "наземно",
-        aviaTariff: "0",
-        paynds: tariffData.paynds / 100,
-        pay: tariffData.pay / 100,
-        nds: tariffData.nds / 100,
-      },
-    };
-  },
-  target: addNewPackage,
 });
 
 /***************************************************** */
@@ -217,28 +180,81 @@ const insertFx = createEffect("insert", {
     }).then((r) => r.json());
   },
 });
-
 //формирование пакета для отправки на сервер для вставки отправления в БД
 sample({
-  //объединение данных о контейнере, печати и а/я
+  //объединение данных о ШК, контейнере, печати и а/я
   source: combine(
-    { $selectedAbonBox, $container, $stamp, $f104Barcode },
-    ({ $selectedAbonBox, $container, $stamp, $f104Barcode }) => ({
+    { $barcode, $selectedAbonBox, $container, $stamp, $f104Barcode },
+    ({ $barcode, $selectedAbonBox, $container, $stamp, $f104Barcode }) => ({
+      barcode: $barcode,
       abonBoxId: $selectedAbonBox[0]?.id ?? "",
       container: $container,
       stamp: $stamp,
       waybillbarcode: $f104Barcode,
     })
   ),
-  clock: addNewPackage,
-  fn: (container, pack) => {
+  clock: fetchFromTarifficatorFx.doneData,
+  fn: (container, tariffData) => {
     //добавляем данные об РПО
-    const [destructPack] = Object.entries(pack);
-    //console.log({ ...container, ...{ barcode: destructPack[0], ...destructPack[1] } });
-    return { ...container, ...{ barcode: destructPack[0], ...destructPack[1] } };
+    return {
+      ...container,
+      name: tariffData.name,
+      typ: tariffData.typ,
+      destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
+      weight: tariffData.weight,
+      sumoc: tariffData.sumoc / 100,
+      sumCover: "0",
+      shipmentMethod: tariffData.transname ?? "наземно",
+      aviaTariff: "0",
+      paynds: tariffData.paynds / 100,
+      pay: tariffData.pay / 100,
+      nds: tariffData.nds / 100,
+    };
   },
   //на сервер
   target: insertFx,
+});
+//если не произошло добавление в бд
+const notInserted = restore(
+  insertFx.doneData.map((resp) => resp !== 0),
+  false
+);
+
+//prepared data and work with LS
+const packageListLocalStorage = connectLocalStorage("packageListLS").onError((err) => console.log(err));
+const resetPackageList = createEvent("resetPL");
+const $packageList = createStore(packageListLocalStorage.init({}) || {})
+  .on(addNewPackage, (state, payload) => ({
+    ...state,
+    ...payload,
+  }))
+  .on(resetPackageList, () => {
+    return {}; //чот с reset не работатет :( хоть issue пиши
+  });
+$packageList.watch(packageListLocalStorage);
+
+//объединение данных ШК и пришедших из тарификатора(просто чтобы упростить запись)
+const union = sample($barcode, fetchFromTarifficatorFx.doneData, (barcode, tariffData) => ({
+  [barcode]: {
+    name: tariffData.name,
+    typ: tariffData.typ,
+    destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
+    weight: tariffData.weight,
+    sumoc: tariffData.sumoc / 100,
+    sumCover: "0",
+    shipmentMethod: tariffData.transname ?? "наземно",
+    aviaTariff: "0",
+    paynds: tariffData.paynds / 100,
+    pay: tariffData.pay / 100,
+    nds: tariffData.nds / 100,
+  },
+}));
+
+//добавляем новое отправление в список (только если с сервера пришел ответ о успешном insert)
+guard({
+  source: sample(union, insertFx.doneData),
+  filter: insertFx.doneData.map((resp) => resp === 0),
+  target: addNewPackage,
 });
 
 //переписать на attach
@@ -288,4 +304,5 @@ export {
   enteredStampNum,
   $stamp,
   insertFx,
+  notInserted,
 };

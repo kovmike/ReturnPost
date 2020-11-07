@@ -9,9 +9,8 @@ import { useStore } from "effector-react";
 
 export const App = ({ history }) => {
   //проверяем наличие юзера в ЛС, результат попадает в гард, и либо ничего не происходит, либо пишется в стор
-  //checkStoredUserFx();
+
   const loggedUser = useStore($loggedUser);
-  console.log(loggedUser);
   history = useHistory();
   //при ините проги редиректим сразу на логин, но если юзер есть, то на приписку
   useEffect(() => {
