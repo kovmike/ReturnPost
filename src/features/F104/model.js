@@ -1,4 +1,4 @@
-import { createEffect, createEvent, sample, createStore, guard } from "effector";
+import { createEffect, createEvent, sample, createStore, forward } from "effector";
 import { formatWaybillNum, numMonth, controlDigit } from "./lib/common";
 
 //import { $destinationIndex } from "./../Registration/model";
@@ -10,6 +10,8 @@ const $f104Barcode = createStore("");
 
 const generate = createEvent("g");
 const waybillAdded = createEvent();
+//зануление номера накладной после записи в бд
+const resetNumWaybill = createEvent();
 waybillAdded.watch((s) => {
   console.log("added");
 });
@@ -23,24 +25,25 @@ const fetchWaybillNumberFx = createEffect("f", {
       body: JSON.stringify({ destination: "waybill", queryParameters: { action: "getlast" } }),
     })
       .then((r) => r.json())
-      .then(([data]) => formatWaybillNum(+data.id + 1));
+      .then(([data]) => formatWaybillNum(+data.id + 1)); //TODO если не пришел номер сделать обратботку
   },
 });
 
 //barcode f104 generator
-$numWaybill.on(fetchWaybillNumberFx.doneData, (_, n) => n);
+$numWaybill.on(fetchWaybillNumberFx.doneData, (_, n) => n).reset(resetNumWaybill);
 
-guard({
-  source: sample({ source: $numWaybill, clock: generate }),
-  filter: (num) => num === 0,
-  target: fetchWaybillNumberFx,
+forward({
+  from: generate,
+  to: fetchWaybillNumberFx,
 });
-//$numWaybill.watch((s) => console.log(s));
+
+$numWaybill.watch((s) => console.log(s));
 
 sample({
   source: $index,
   clock: $numWaybill,
   fn: (index, number) => {
+    console.log(number);
     let barcode = index + numMonth(new Date()) + number;
     return barcode + controlDigit(barcode);
   },
@@ -49,4 +52,4 @@ sample({
 //запись накладной в бд $selectedAbonBox,
 
 //$f104Barcode.watch((s) => console.log(s));
-export { $f104Barcode, generate, $numWaybill, waybillAdded };
+export { $f104Barcode, generate, $numWaybill, waybillAdded, resetNumWaybill };

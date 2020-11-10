@@ -1,6 +1,6 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
-import { $f104Barcode, generate, $numWaybill, waybillAdded } from "../F104/model";
+import { $f104Barcode, generate, $numWaybill, waybillAdded, resetNumWaybill } from "../F104/model";
 import { $loggedUser } from "../Auth/model";
 
 const trackingURL = "http://10.106.0.253:8000/";
@@ -276,11 +276,16 @@ sample({
       barcode: $f104Barcode,
       printdate: today, //.replace(/\//g, "."),
       firmid: $selectedAbonBox[0].id,
-      userid: $loggedUser,
+      userid: $loggedUser.userName,
       waybilltype: 12,
     };
   },
   target: addNewWaybillToDBFx,
+});
+
+forward({
+  from: addNewWaybillToDBFx.done,
+  to: resetNumWaybill,
 });
 /****************************
  *

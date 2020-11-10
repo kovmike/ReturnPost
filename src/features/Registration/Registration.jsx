@@ -20,7 +20,7 @@ export const Registration = () => {
   const notInsertedFlag = useStore(notInserted);
 
   const showF104 = () => {
-    generate();
+    //generate();
     showComponentDialog();
   };
   const clearState = () => {

@@ -11,9 +11,10 @@ const Table = ({ handler }) => {
           <th>Составитель</th>
           <th>а\я</th>
           <th>Тип накладной</th>
+          <th>Просмотр</th>
         </tr>
       </thead>
-      <tbody> {}</tbody>
+      <tbody> {handler()}</tbody>
     </table>
   );
 };
