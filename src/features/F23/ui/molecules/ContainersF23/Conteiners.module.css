@@ -1,0 +1,20 @@
+.containerswrapper {
+  margin-top: 40px;
+  display: flex;
+  width: 100%;
+  /* margin-left: auto; */
+  justify-content: flex-end;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  margin-left: 30px;
+}
+
+.smallline {
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  justify-content: space-between;
+}

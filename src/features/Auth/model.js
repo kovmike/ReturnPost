@@ -46,7 +46,7 @@ sample({
     source: fetchUserIDFx.doneData,
     filter: (data) => data.length > 0,
   }),
-  fn: (data) => ({ userName: data[0].name, isAdmin: !!data[0].isadmin }),
+  fn: (data) => ({ userName: data[0].name, isAdmin: data[0].isadmin }),
   target: $loggedUser,
 });
 

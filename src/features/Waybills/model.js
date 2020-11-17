@@ -11,15 +11,16 @@ const setSearchingWaybill = createEvent();
 const searchRPO = createEvent();
 const rpoNotFound = createEvent();
 const resetWaybillBarcode = createEvent();
+const resetWayBillList = createEvent();
 
 const $startPeriod = createStore({ start: "2000-01-01" }); //-> 01012000
 const $endPeriod = createStore({ end: today }); // -> today
 const $rpo = createStore({ rpo: "" });
 const $waybillBarcode = createStore({ waybill: "" }).reset(resetWaybillBarcode);
-const $waybillList = createStore([]);
+const $waybillList = createStore([]).reset(resetWayBillList);
 const $rpoNotFound = createStore(false).reset(setSearchingWaybill); //возвращаем к дефолтному значению если нашли рпо
 
-$waybillBarcode.watch((s) => console.log(s));
+//$waybillBarcode.watch((s) => console.log(s));
 //поиск в таблице rpo накладной по введенному ШК
 const searchRPOFx = createEffect(async (rpo) => {
   return fetch(trackingURL, {
@@ -58,7 +59,7 @@ sample({
       user: "",
     };
     //если пользовательне админ, то добавляем его к запросу
-    if (!user.isAdmin) return { ...res, user: user.userName };
+    if (+user.isAdmin === 0) return { ...res, user: user.userName };
     return res;
   }),
   clock: search,
@@ -98,10 +99,12 @@ sample({
 export {
   $rpoNotFound,
   $waybillList,
+  $waybillBarcode,
   setStartPeriod,
   setEndPeriod,
   setSearchingRpo,
   setSearchingWaybill,
   search,
   searchRPO,
+  resetWayBillList,
 };

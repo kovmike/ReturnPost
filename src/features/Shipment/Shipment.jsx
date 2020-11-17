@@ -1,12 +1,13 @@
 import React from "react";
-import { createStore } from "effector";
-import { useStore } from "effector-react";
-
-const dummy = createStore("Shipment");
+import { F23 } from "./../F23";
 
 const Shipment = () => {
-  const d = useStore(dummy);
-  return <h1>{d + " - Shipment"}</h1>;
+  return (
+    <div>
+      <h1>Shipment</h1>
+      <F23 />
+    </div>
+  );
 };
 
 export { Shipment };

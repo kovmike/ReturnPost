@@ -6,9 +6,9 @@ import { validateBarcode } from "../../common/validateBarcode";
 import {
   $waybillList,
   $rpoNotFound,
+  $waybillBarcode,
   setStartPeriod,
   setEndPeriod,
-  setSearchingRpo,
   setSearchingWaybill,
   searchRPO,
   search,
@@ -18,6 +18,7 @@ import { useStore } from "effector-react";
 export const Waybills = () => {
   const rpoNotFound = useStore($rpoNotFound);
   const waybillList = useStore($waybillList);
+  const { waybill } = useStore($waybillBarcode);
   const startPeriod = (e) => {
     e.preventDefault();
     setStartPeriod(e.target.value);
@@ -31,9 +32,11 @@ export const Waybills = () => {
   const searchingWaybill = (e) => {
     setSearchingWaybill(e.target.value);
   };
+
   const rpoSearch = (e) => {
     if (validateBarcode(e.target.value)) searchRPO(e.target.value);
   };
+
   const prepareData = () => {
     if (waybillList.length > 0) {
       console.log(waybillList);
@@ -65,7 +68,7 @@ export const Waybills = () => {
       </div>
       <div>
         Поиск накладной №
-        <InputWaybills handler={(e) => searchingWaybill(e)} />
+        <InputWaybills handler={(e) => searchingWaybill(e)} value={waybill} />
       </div>
       <div>
         Поиск РПО №

@@ -2,11 +2,13 @@ import React from "react";
 import logo from "./../../common/logo.svg";
 import classes from "./Header.module.css";
 import { logOut } from "../../../features/Auth/model";
+import { resetWayBillList } from "./../../../features/Waybills/model";
 
 export const Header = ({ user }) => {
   const logout = () => {
     localStorage.clear();
     logOut();
+    resetWayBillList();
   };
 
   return (

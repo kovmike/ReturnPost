@@ -5,7 +5,6 @@ import { F104 } from "./../F104/F104.jsx";
 import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
 import { TableRegistration } from "./ui/organisms/TableRegistration";
 import { resetPackageList, insertFx, notInserted } from "./model";
-import { generate } from "../F104/model";
 
 //Component dialog state
 /**
@@ -26,8 +25,11 @@ export const Registration = () => {
   const clearState = () => {
     resetPackageList();
   };
-  const insert = () => {
-    insertFx();
+
+  const insert = async () => {
+    return fetch("http://tracking.russianpost.ru/hdps/v5/history/17096335016991").then((response) => {
+      return response.text();
+    });
   };
 
   return (

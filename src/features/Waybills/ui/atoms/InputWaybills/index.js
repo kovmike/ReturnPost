@@ -1,7 +1,7 @@
 import React from "react";
 
-const InputWaybills = ({ handler }) => {
-  return <input type="text" onChange={handler} />;
+const InputWaybills = ({ handler, value }) => {
+  return <input type="text" onChange={handler} value={value} />;
 };
 
 export { InputWaybills };
