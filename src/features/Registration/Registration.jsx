@@ -4,7 +4,7 @@ import { useStore } from "effector-react";
 import { F104 } from "./../F104/F104.jsx";
 import { HeaderRegistration } from "./ui/organisms/HeaderRegistration";
 import { TableRegistration } from "./ui/organisms/TableRegistration";
-import { resetPackageList, insertFx, notInserted } from "./model";
+import { resetPackageList, notInserted } from "./model";
 
 //Component dialog state
 /**

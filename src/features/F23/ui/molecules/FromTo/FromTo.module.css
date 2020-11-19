@@ -1,0 +1,15 @@
+.fromToWrapper {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 900px;
+  justify-content: center;
+}
+.fromToLine {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 730px;
+  margin-top: 10px;
+}

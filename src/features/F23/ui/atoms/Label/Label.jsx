@@ -1,7 +1,11 @@
 import cl from "./Label.module.css";
 
-const Label = ({ text }) => {
-  return <label className={cl.descript}>{text}</label>;
+const Label = ({ text, size }) => {
+  return (
+    <label style={{ fontSize: size + "px" }} className={cl.descript}>
+      {text}
+    </label>
+  );
 };
 
 export { Label };

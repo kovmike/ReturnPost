@@ -18,5 +18,5 @@ const Table = ({ handler }) => {
     </table>
   );
 };
-//<tbody> {handler()}</tbody>
+
 export { Table };

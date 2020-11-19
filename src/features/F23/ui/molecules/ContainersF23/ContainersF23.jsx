@@ -8,33 +8,33 @@ const ContainersF23 = () => {
       <div className={cl.column}>
         <DivUnderLined text={"Подлежит обмену: "} />
         <div className={cl.smallline}>
-          <Label text={"Ящик"} />
+          <Label text={"Ящик"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
         <div className={cl.smallline}>
-          <Label text={"Мешки"} />
+          <Label text={"Мешки"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
         <div className={cl.smallline}>
-          <Label text={"Паллеты"} />
+          <Label text={"Паллеты"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
       </div>
       <div className={cl.column}>
         <div className={cl.smallline}>
-          <Label text={"Контейнер"} />
+          <Label text={"Контейнер"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
         <div className={cl.smallline}>
-          <Label text={"Ящик флэт"} />
+          <Label text={"Ящик флэт"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
         <div className={cl.smallline}>
-          <Label text={"Мешки авиа"} />
+          <Label text={"Мешки авиа"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
         <div className={cl.smallline}>
-          <Label text={"Поддоны пласт"} />
+          <Label text={"Поддоны пласт"} size={"12"} />
           <DivUnderLined text={""} />
         </div>
       </div>

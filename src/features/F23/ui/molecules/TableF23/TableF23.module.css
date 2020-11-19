@@ -1,0 +1,31 @@
+.tableF23wrapper {
+  margin: 30px 20px 0 20px;
+}
+.capacity {
+  font-size: 10px;
+  font-weight: 400;
+  padding: 10px 5px;
+  border-bottom: 0;
+}
+
+.tableHeaders {
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.listOfPackages {
+  display: table;
+  border-collapse: collapse;
+}
+
+.simpleCorr {
+  padding: 0;
+}
+
+.leftInnerCell {
+  border-left: 0;
+}
+
+.rightInnerCell {
+  border-right: 0;
+}

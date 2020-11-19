@@ -2,7 +2,7 @@
   width: 1056px;
   min-height: 400px;
 
-  border: 1px solid black;
+  /* border: 1px solid black; */
 }
 
 @media print {

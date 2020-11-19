@@ -1,15 +1,25 @@
-import React from "react";
-import { HeaderF23, ContainersF23 } from "./ui/molecules";
+import React, { useRef, useEffect } from "react";
+import { HeaderF23, ContainersF23, FromTo, TableF23, Summary } from "./ui/molecules";
+import { showF23Dialog } from "./../Shipment/model";
 import classes from "./F23.module.css";
 
 const F23 = () => {
+  const dialogF23Ref = useRef(null);
+  useEffect(() => {
+    if (dialogF23Ref.current) dialogF23Ref.current.showModal();
+  }, [dialogF23Ref]);
+
   return (
-    <div className={classes.wrapper}>
-      {/* <span>&uarr;</span>
-      <span>&darr;</span> */}
-      <HeaderF23 />
-      <ContainersF23 />
-    </div>
+    <dialog ref={dialogF23Ref} className={classes.dialogForm}>
+      <div className={classes.wrapper}>
+        <button onClick={() => showF23Dialog()}>закрыть</button>
+        <HeaderF23 />
+        <ContainersF23 />
+        <FromTo />
+        <TableF23 />
+        <Summary />
+      </div>
+    </dialog>
   );
 };
 

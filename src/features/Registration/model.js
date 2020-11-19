@@ -278,6 +278,7 @@ sample({
       firmid: $selectedAbonBox[0].id,
       userid: $loggedUser.userName,
       waybilltype: 12,
+      shipped: 0,
     };
   },
   target: addNewWaybillToDBFx,

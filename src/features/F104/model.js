@@ -20,10 +20,10 @@ const fetchWaybillNumberFx = createEffect("f", {
   handler: async () => {
     return fetch(trackingURL, {
       method: "POST",
-      body: JSON.stringify({ destination: "waybill", queryParameters: { action: "getlast" } }),
+      body: JSON.stringify({ destination: "config" }),
     })
       .then((r) => r.json())
-      .then(([data]) => formatWaybillNum(+data.id + 1)); //TODO если не пришел номер сделать обратботку
+      .then(([data]) => formatWaybillNum(+data.value)); //TODO если не пришел номер сделать обратботку
   },
 });
 

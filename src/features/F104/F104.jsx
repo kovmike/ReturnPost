@@ -21,6 +21,7 @@ const F104 = () => {
   const f014Barcode = useStore($f104Barcode);
   const container = useStore($container);
   const stamp = useStore($stamp);
+
   const dialogRef = useRef(null);
   useEffect(() => {
     if (dialogRef.current) dialogRef.current.showModal();
