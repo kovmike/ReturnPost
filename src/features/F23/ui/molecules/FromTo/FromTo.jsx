@@ -1,10 +1,10 @@
 import { DivUnderLinedLong, Label } from "../../atoms";
 import cl from "./FromTo.module.css";
 
-const FromTo = () => {
+const FromTo = ({ barcode }) => {
   return (
     <div className={cl.fromToWrapper}>
-      <Label text={"Накладная №"} />
+      <Label text={`Накладная № ${barcode}`} />
       <div className={cl.fromToLine}>
         <Label text={"Из"} size={"16"} />
         <DivUnderLinedLong text={"ПОЧТАМТ 170000 ТВЕРЬ"} />

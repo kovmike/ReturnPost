@@ -1,7 +1,7 @@
 import React from "react";
 
 import classes from "./TableF104.module.css";
-import { digToText } from "../../../lib/common";
+import { digToText } from "./../../../../../common/common.js";
 
 export const TableF104 = ({ packageList }) => {
   /**

@@ -1,0 +1,11 @@
+.wrapperHeadRegistration {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.regSetup {
+}
+
+.f104Setup {
+}

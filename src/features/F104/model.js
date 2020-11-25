@@ -1,5 +1,5 @@
 import { createEffect, createEvent, sample, createStore, forward } from "effector";
-import { formatWaybillNum, numMonth, controlDigit } from "./lib/common";
+import { formatWaybillNum, numMonth, controlDigit } from "./../../common/common";
 
 //import { $destinationIndex } from "./../Registration/model";
 const trackingURL = "http://10.106.0.253:8000/";
@@ -23,7 +23,7 @@ const fetchWaybillNumberFx = createEffect("f", {
       body: JSON.stringify({ destination: "config" }),
     })
       .then((r) => r.json())
-      .then(([data]) => formatWaybillNum(+data.value)); //TODO если не пришел номер сделать обратботку
+      .then(([data]) => +data.value); //TODO если не пришел номер сделать обратботку
   },
 });
 
@@ -35,19 +35,18 @@ forward({
   to: fetchWaybillNumberFx,
 });
 
-$numWaybill.watch((s) => console.log(s));
+//$numWaybill.watch((s) => console.log(s));
 
 sample({
   source: $index,
   clock: $numWaybill,
   fn: (index, number) => {
-    console.log(number);
-    let barcode = index + numMonth(new Date()) + number;
+    //console.log(number);
+    let barcode = index + numMonth(new Date()) + formatWaybillNum(number);
     return barcode + controlDigit(barcode);
   },
   target: $f104Barcode,
 });
-//запись накладной в бд $selectedAbonBox,
 
 //$f104Barcode.watch((s) => console.log(s));
 export { $f104Barcode, generate, $numWaybill, waybillAdded, resetNumWaybill };

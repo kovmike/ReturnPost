@@ -3,7 +3,7 @@ import { HeaderF23, ContainersF23, FromTo, TableF23, Summary } from "./ui/molecu
 import { showF23Dialog } from "./../Shipment/model";
 import classes from "./F23.module.css";
 
-const F23 = () => {
+const F23 = ({ barcode }) => {
   const dialogF23Ref = useRef(null);
   useEffect(() => {
     if (dialogF23Ref.current) dialogF23Ref.current.showModal();
@@ -13,9 +13,9 @@ const F23 = () => {
     <dialog ref={dialogF23Ref} className={classes.dialogForm}>
       <div className={classes.wrapper}>
         <button onClick={() => showF23Dialog()}>закрыть</button>
-        <HeaderF23 />
+        <HeaderF23 barcode={barcode} />
         <ContainersF23 />
-        <FromTo />
+        <FromTo barcode={barcode} />
         <TableF23 />
         <Summary />
       </div>

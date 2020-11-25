@@ -45,8 +45,8 @@ export const Waybills = () => {
           <td>{waybill.barcode}</td>
           <td>{new Date(waybill.printdate).toLocaleString("ru-RU").split(",")[0]}</td>
           <td>{waybill.userid}</td>
-          <td>{waybill.firmid}</td>
-          <td>{"standart"}</td>
+          <td>{waybill.firmname}</td>
+          <td>{waybill.type}</td>
           <td>
             <button>Просмотр</button>
           </td>

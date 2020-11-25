@@ -50,6 +50,14 @@ sample({
   target: $selectedAbonBox,
 });
 
+//отметка дефектной ведомости
+const defectCheked = createEvent();
+const $defectF104 = createStore(false).on(defectCheked, (_, checked) => checked);
+$defectF104.watch((s) => console.log(s));
+
+//показ диалогового окна с ф104
+const showComponentDialog = createEvent("showComponent");
+const $componentDialogIsActive = createStore(false).on(showComponentDialog, (state, _) => !state);
 //номер контейнера
 const enteredContainerNum = createEvent();
 const $container = createStore("").on(enteredContainerNum, (_, container) => container);
@@ -174,6 +182,7 @@ forward({
 //отравляется запрос на сервер с направление crud и экшеном insert
 const insertFx = createEffect("insert", {
   handler: async (payload) => {
+    console.log(payload);
     return fetch(trackingURL, {
       method: "POST",
       body: JSON.stringify({ destination: "rpo", queryParameters: { action: "INSERT", ...payload } }),
@@ -183,16 +192,11 @@ const insertFx = createEffect("insert", {
 //формирование пакета для отправки на сервер для вставки отправления в БД
 sample({
   //объединение данных о ШК, контейнере, печати и а/я
-  source: combine(
-    { $barcode, $selectedAbonBox, $container, $stamp, $f104Barcode },
-    ({ $barcode, $selectedAbonBox, $container, $stamp, $f104Barcode }) => ({
-      barcode: $barcode,
-      abonBoxId: $selectedAbonBox[0]?.id ?? "",
-      container: $container,
-      stamp: $stamp,
-      waybillbarcode: $f104Barcode,
-    })
-  ),
+  source: combine({ $barcode, $selectedAbonBox, $numWaybill }, ({ $barcode, $selectedAbonBox, $numWaybill }) => ({
+    barcode: $barcode,
+    abonBoxId: $selectedAbonBox[0]?.id ?? "",
+    f104id: +$numWaybill,
+  })),
   clock: fetchFromTarifficatorFx.doneData,
   fn: (container, tariffData) => {
     //добавляем данные об РПО
@@ -278,7 +282,7 @@ sample({
       firmid: $selectedAbonBox[0].id,
       userid: $loggedUser.userName,
       waybilltype: 12,
-      shipped: 0,
+      f23id: 0,
     };
   },
   target: addNewWaybillToDBFx,
@@ -311,4 +315,8 @@ export {
   $stamp,
   insertFx,
   notInserted,
+  defectCheked,
+  $defectF104,
+  showComponentDialog,
+  $componentDialogIsActive,
 };

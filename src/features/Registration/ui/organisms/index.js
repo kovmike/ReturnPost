@@ -1,3 +1,2 @@
-import { $selectedAbonBox, $destinationIndex } from "./HeaderRegistration/model";
-
-export { $selectedAbonBox, $destinationIndex };
+export { HeaderRegistration } from "./HeaderRegistration/HeaderRegistration";
+export { TableRegistration } from "./TableRegistration/TableRegistration";

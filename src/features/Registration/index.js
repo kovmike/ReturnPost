@@ -1,4 +1,4 @@
-import { $packageList, $selectedAbonBox, resetPackageList, $stamp, $container } from "./model";
+import { $packageList, $selectedAbonBox, resetPackageList, $stamp, $container, showComponentDialog } from "./model";
 
-export { Registration, showComponentDialog } from "./Registration.jsx";
-export { $packageList, $selectedAbonBox, resetPackageList, $stamp, $container };
+export { Registration } from "./Registration.jsx";
+export { $packageList, $selectedAbonBox, resetPackageList, $stamp, $container, showComponentDialog };

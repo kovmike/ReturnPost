@@ -6,7 +6,7 @@ const ShipmentTable = ({ unshippedList }) => {
       return (
         <tr>
           <td>{waybill.barcode}</td>
-          <td>{waybill.printdate}</td>
+          <td>{new Date(waybill.printdate).toLocaleString("ru-RU").split(",")[0]}</td>
           <td>{waybill.userid}</td>
           <td>{waybill.firmid}</td>
           <td>{waybill.waybilltype}</td>
