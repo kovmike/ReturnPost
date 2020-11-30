@@ -272,16 +272,16 @@ const addNewWaybillToDBFx = createEffect(async (payload) => {
 
 //запись накладной в бд(формирование пэйлода для запроса на сервер)
 sample({
-  source: { $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser },
+  source: { $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser, $defectF104 },
   clock: waybillAdded,
-  fn: ({ $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser }) => {
+  fn: ({ $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser, $defectF104 }) => {
     return {
       id: +$numWaybill,
       barcode: $f104Barcode,
       printdate: today, //.replace(/\//g, "."),
       firmid: $selectedAbonBox[0].id,
       userid: $loggedUser.userName,
-      waybilltype: 12,
+      waybilltype: $defectF104 ? 5 : 6,
       f23id: 0,
     };
   },

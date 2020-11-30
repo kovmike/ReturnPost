@@ -1,39 +1,88 @@
 import cl from "./TableF23.module.css";
 
-const TableF23 = () => {
+const TableF23 = ({ list }) => {
+  const prepareListF23 = (arr) => {
+    return arr.map((waybill) => {
+      return (
+        <tr>
+          <td className={cl.cell}>{waybill.barcode}</td>
+          <td className={cl.cell}>{waybill.type}</td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}></td>
+          <td className={cl.cell}>1?</td>
+          <td className={cl.cell}>{waybill.count}</td>
+        </tr>
+      );
+    });
+  };
   return (
     <div className={cl.tableF23wrapper}>
       <table className={cl.listOfPackages}>
         <thead>
           <tr>
-            <th className={cl.tableHeaders}>ОПС назначения Идентификатор номер накладной</th>
-            <th className={cl.tableHeaders}>Вид емкости</th>
-            <th className={cl.tableHeaders + " " + cl.simpleCorr}>
-              ЕМКОСТИ
-              <tr className={cl.innerRow}>
-                <th className={cl.capacity + " " + cl.leftInnerCell}>C отпр 1кл</th>
-                <th className={cl.capacity}>EMS</th>
-                <th className={cl.capacity}>Правительственные</th>
-                <th className={cl.capacity}>Международные</th>
-                <th className={cl.capacity}>Страховые</th>
-                <th className={cl.capacity}>С заказной корресп</th>
-                <th className={cl.capacity + " " + cl.simpleCorr}>
-                  С простой корреспонденцией
-                  <tr>
-                    <th className={cl.capacity + " " + cl.leftInnerCell}>Колво</th>
-                    <th className={cl.capacity + " " + cl.rightInnerCell}>Вес, (кг)</th>
-                  </tr>
-                </th>
-                <th className={cl.capacity}>C печатью</th>
-                <th className={cl.capacity}>Порожняя тара</th>
-                <th className={cl.capacity + " " + cl.rightInnerCell}>Группа РПО</th>
-              </tr>
+            <th rowSpan={3} className={cl.tableHeaders}>
+              ОПС назначения Идентификатор номер накладной
             </th>
-            <th className={cl.tableHeaders}>Всего емкостей</th>
-            <th className={cl.tableHeaders}>Всего РПО пересылаемых открыто</th>
+            <th rowSpan={3} className={cl.tableHeaders}>
+              Вид емкости
+            </th>
+            <th colSpan={11} className={cl.tableHeaders}>
+              ЕМКОСТИ
+            </th>
+            <th rowSpan={3} className={cl.tableHeaders}>
+              Всего емкостей
+            </th>
+            <th rowSpan={3} className={cl.tableHeaders}>
+              Всего РПО пересылаемых открыто
+            </th>
+          </tr>
+          <tr>
+            <th rowSpan={2} className={cl.capacity}>
+              C отпр 1кл
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              EMS
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              Правительственные
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              Международные
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              Страховые
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              С заказной корресп
+            </th>
+            <th colSpan={2} className={cl.capacity}>
+              С простой корреспонденцией
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              C печатью
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              Порожняя тара
+            </th>
+            <th rowSpan={2} className={cl.capacity}>
+              Группа РПО
+            </th>
+          </tr>
+          <tr>
+            <th className={cl.capacity}>Колво</th>
+            <th className={cl.capacity}>Вес, (кг)</th>
           </tr>
         </thead>
-        <tbody> </tbody>
+        <tbody>{prepareListF23(list)}</tbody>
       </table>
     </div>
   );
