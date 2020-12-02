@@ -1,4 +1,4 @@
-import { createStore, createEffect, createEvent, sample, combine, guard, forward, split } from "effector";
+import { createStore, createEffect, createEvent, sample, combine, forward, split } from "effector";
 import { $loggedUser } from "./../Auth/model";
 const trackingURL = "http://10.106.0.253:8000/";
 const today = new Date().toLocaleDateString("ru").split(".").reverse().join("-");
@@ -34,7 +34,7 @@ const fetchListWaybillFx = createEffect(async (what) => {
   console.log(what);
   return fetch(trackingURL, {
     method: "POST",
-    body: JSON.stringify({ destination: "waybill", queryParameters: { action: "select", ...what } }),
+    body: JSON.stringify({ destination: "f104", queryParameters: { action: "select", ...what } }),
   }).then((r) => r.json());
 });
 

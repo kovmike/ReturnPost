@@ -17,7 +17,7 @@ const getUnshippedWaybills = createEvent();
 const fetchUnshippedWaybillsFx = createEffect(async () => {
   return fetch(trackingURL, {
     method: "POST",
-    body: JSON.stringify({ destination: "waybill", queryParameters: { action: "unshipped" } }),
+    body: JSON.stringify({ destination: "f104", queryParameters: { action: "unshipped" } }),
   }).then((r) => r.json());
 });
 
@@ -94,21 +94,36 @@ sample({
 //запись ф23 в бд
 const insertInToF23 = createEvent();
 
+//запись в бд, получаем Id наакладной в таблице f23
 const insertInToF23Fx = createEffect(async (newF23) => {
   return fetch(trackingURL, {
     method: "POST",
     body: JSON.stringify({ destination: "f23", queryParameters: { action: "addf23", ...newF23 } }),
-  })
-    .then((r) => r.json())
-    .then((data) => {
-      console.log(data);
-    });
+  }).then((r) => r.json());
 });
 sample({
   source: $f23barcode,
   clock: insertInToF23,
   fn: (barcode) => ({ barcode, printdate: new Date().toLocaleDateString("ru").split(".").reverse().join("-") }),
   target: insertInToF23Fx,
+});
+
+//отметка на накладных ф104 о принадлежности к ф23
+const updateF104Fx = createEffect(async (payload) => {
+  console.log(payload);
+  return fetch(trackingURL, {
+    method: "POST",
+    body: JSON.stringify({ destination: "f104", queryParameters: { action: "updateF23id", ...payload } }),
+  })
+    .then((r) => r.json())
+    .then((data) => console.log(data));
+});
+
+sample({
+  source: $listF23,
+  clock: insertInToF23Fx.doneData,
+  fn: (list, id) => ({ list: list.map(({ barcode }) => barcode).join(","), id }),
+  target: updateF104Fx,
 });
 
 export {

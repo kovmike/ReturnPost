@@ -266,7 +266,7 @@ guard({
 const addNewWaybillToDBFx = createEffect(async (payload) => {
   return fetch(trackingURL, {
     method: "POST",
-    body: JSON.stringify({ destination: "waybill", queryParameters: { action: "addnew", ...payload } }),
+    body: JSON.stringify({ destination: "f104", queryParameters: { action: "addnew", ...payload } }),
   }).then((r) => r.json());
 });
 
