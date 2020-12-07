@@ -13,10 +13,11 @@ export const AbonentBox = ({ abonBoxNumber, firmName, abonBoxList, pickAbonBox, 
       return <option value={abonBox.abonentbox + " : " + abonBox.firmname}>{"ID: " + abonBox.id}</option>;
     });
   };
-  const valueOfIntup = (number, name) => {
-    if (number && name) return number + " : " + name;
-    return "";
-  };
+  //change: Убрал конттроль над полем ая, чтоб пользователь мог вводить id или название ая
+  // const valueOfIntup = (number, name) => {
+  //   if (number && name) return number + " : " + name;
+  //   return "";
+  // };
 
   return (
     <div>
@@ -25,7 +26,7 @@ export const AbonentBox = ({ abonBoxNumber, firmName, abonBoxList, pickAbonBox, 
         ref={abonBoxRef}
         list="dataListId"
         onChange={pickAbonBox}
-        value={valueOfIntup(abonBoxNumber, firmName)}
+        // value={valueOfIntup(abonBoxNumber, firmName)}
       ></input>
       <datalist id="dataListId">{prepareList(abonBoxList)}</datalist>
       <Button disabled={true} handler={clearABInput} title="Очистить" />

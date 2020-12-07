@@ -12,11 +12,16 @@ const $loggedUser = restore(setStoredLoggedUser, false).reset(logOut);
 //проверка ЛС на наличие юзера
 const checkStoredUserFx = createEffect("storedUser", {
   handler: () => {
-    return { userName: localStorage.getItem("userName"), isAdmin: localStorage.getItem("isAdmin") };
+    return localStorage.getItem("userName") === "null"
+      ? { userName: null, isAdmin: null }
+      : { userName: localStorage.getItem("userName"), isAdmin: localStorage.getItem("isAdmin") };
   },
 });
 
 const isLogged = $loggedUser.map((user) => !user?.userName);
+//isLogged.watch((s) => console.log(s));
+$loggedUser.watch((s) => console.log(s));
+
 //если есть в ЛС
 guard({
   source: checkStoredUserFx.doneData,

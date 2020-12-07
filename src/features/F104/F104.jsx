@@ -67,6 +67,7 @@ const F104 = () => {
       <button
         className={classes.closeBtn}
         onClick={() => {
+          window.print();
           waybillAdded();
           resetPackageList();
         }}

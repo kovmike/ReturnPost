@@ -15,7 +15,7 @@ export const App = ({ history }) => {
   //при ините проги редиректим сразу на логин, но если юзер есть, то на приписку
   useEffect(() => {
     checkStoredUserFx();
-    if (loggedUser) {
+    if (!!loggedUser.userName) {
       history.push("/registration");
     } else {
       history.push("/login");
@@ -24,7 +24,7 @@ export const App = ({ history }) => {
 
   return (
     <div className={classes.wrapper}>
-      <Header user={loggedUser ? loggedUser : "Ожидание авторизации"} />
+      <Header user={!!loggedUser.userName ? loggedUser.userName : "Ожидание авторизации"} />
       <Navbar />
       <div className={classes.workArea}>
         {/* роутинг */}
@@ -37,9 +37,9 @@ export const App = ({ history }) => {
               path={route.path}
               exact={route.exact}
               render={() => {
-                route.component();
+                //route.component();
                 // редирект на логин, если не авторизован пользователь
-                return loggedUser ? route.component() : <Redirect to={{ pathname: "/login" }} />;
+                return !!loggedUser.userName ? route.component : <Redirect to={{ pathname: "/login" }} />;
               }}
             />
           ))}

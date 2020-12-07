@@ -53,7 +53,7 @@ sample({
 //отметка дефектной ведомости
 const defectCheked = createEvent();
 const $defectF104 = createStore(false).on(defectCheked, (_, checked) => checked);
-$defectF104.watch((s) => console.log(s));
+//$defectF104.watch((s) => console.log(s));
 
 //показ диалогового окна с ф104
 const showComponentDialog = createEvent("showComponent");
@@ -156,7 +156,7 @@ sample({
     for (let param in urlParameters) {
       url += urlParameters[param];
     }
-    //console.log(url);   включить чтобы видкть ссылку тарификатора
+    console.log(url); //включить чтобы видкть ссылку тарификатора
     return url;
   },
   target: fetchFromTarifficatorFx,
@@ -182,7 +182,6 @@ forward({
 //отравляется запрос на сервер с направление crud и экшеном insert
 const insertFx = createEffect("insert", {
   handler: async (payload) => {
-    console.log(payload);
     return fetch(trackingURL, {
       method: "POST",
       body: JSON.stringify({ destination: "rpo", queryParameters: { action: "INSERT", ...payload } }),
@@ -204,9 +203,10 @@ sample({
       ...container,
       name: tariffData.name,
       typ: tariffData.typ,
+      ctg: tariffData.cat,
       destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
       weight: tariffData.weight,
-      sumoc: tariffData.sumoc / 100,
+      sumoc: tariffData.sumoc ? tariffData.sumoc / 100 : null,
       sumCover: "0",
       shipmentMethod: tariffData.transname ?? "наземно",
       aviaTariff: "0",
@@ -244,7 +244,7 @@ const union = sample($barcode, fetchFromTarifficatorFx.doneData, (barcode, tarif
     typ: tariffData.typ,
     destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
     weight: tariffData.weight,
-    sumoc: tariffData.sumoc / 100,
+    sumoc: tariffData.sumoc ? tariffData.sumoc / 100 : "-",
     sumCover: "0",
     shipmentMethod: tariffData.transname ?? "наземно",
     aviaTariff: "0",

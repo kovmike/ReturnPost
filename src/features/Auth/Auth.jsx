@@ -11,8 +11,8 @@ export const Auth = ({ history }) => {
   history = useHistory();
   //пушим в хистори урл приписки, только после того как изменился loggedUser
   useEffect(() => {
-    if (loggedUser) history.push("/registration");
-  }, [history, loggedUser]);
+    if (loggedUser.userName) history.push("/registration");
+  }, [history, loggedUser.userName]);
 
   const changeInput = (e) => {
     setUserId(e.target.value);
