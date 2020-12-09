@@ -8,9 +8,11 @@ import {
   resetPackageList,
   $stamp,
   $container,
-} from "./../Registration";
+  $f104Barcode,
+  waybillAdded,
+} from "./../Registration/model.js";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
-import { $f104Barcode, waybillAdded } from "./model";
+//import { $f104Barcode, waybillAdded } from "./model";
 
 import classes from "./F104.module.css";
 
@@ -45,7 +47,7 @@ const F104 = () => {
     <dialog ref={dialogRef} className={classes.dialogForm}>
       <div className={classes.wrapper}>
         <HeaderF104 waybillBarcode={f014Barcode} />
-        <InfoF104 abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname} />
+        <InfoF104 barcode={f014Barcode} abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname} />
         <InfoContainerF104 container={container} stamp={stamp} />
         <TableF104 packageList={packageList} />
         <DiffF104 packageList={packageList} />

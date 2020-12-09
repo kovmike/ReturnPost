@@ -1,12 +1,63 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
-import { $f104Barcode, generate, $numWaybill, waybillAdded, resetNumWaybill } from "../F104/model";
+import { formatWaybillNum, numMonth, controlDigit } from "./../../common/common";
 import { $loggedUser } from "../Auth/model";
+
+//TODO навести порядок в этой помоищще
 
 const trackingURL = "http://10.106.0.253:8000/";
 const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 const today = new Date().toLocaleDateString("ru").split(".").reverse().join("-");
 //const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
+
+//**************блок для ф104
+const generate = createEvent("g");
+const waybillAdded = createEvent();
+//зануление номера накладной после записи в бд
+const resetNumWaybill = createEvent();
+
+const $index = createStore("170000");
+const $numWaybill = createStore(0);
+const $f104Barcode = createStore("").reset(resetNumWaybill);
+
+//запись накладной в бд
+
+//запрос последней накладной, получение порядкового номера
+const fetchWaybillNumberFx = createEffect("f", {
+  handler: async () => {
+    return fetch(trackingURL, {
+      method: "POST",
+      body: JSON.stringify({ destination: "config" }),
+    })
+      .then((r) => r.json())
+      .then(([data]) => +data.value); //TODO если не пришел номер сделать обратботку
+  },
+});
+
+//barcode f104 generator
+$numWaybill.on(fetchWaybillNumberFx.doneData, (_, n) => n).reset(resetNumWaybill);
+
+forward({
+  from: generate,
+  to: fetchWaybillNumberFx,
+});
+
+//$numWaybill.watch((s) => console.log(s));
+
+sample({
+  source: $index,
+  clock: $numWaybill,
+  fn: (index, number) => {
+    //console.log(number);
+    let barcode = index + numMonth(new Date()) + formatWaybillNum(number);
+    return barcode + controlDigit(barcode);
+  },
+  target: $f104Barcode,
+});
+
+//$f104Barcode.watch((s) => console.log(s));
+/***************************конец блока для ф104 */
+
 ////Шапка регистрации отправления
 
 //запись индекса приписки
@@ -108,6 +159,7 @@ const addDeclaredValue = createEvent("addDeclaredValue");
 guard({
   source: fetchFromTrackingFx.doneData,
   filter: (payload) => {
+    // console.log(payload);
     return +payload.ItemParameters.MailCtg.Id !== 3;
   },
   target: addDeclaredValue,
@@ -208,11 +260,12 @@ sample({
       weight: tariffData.weight,
       sumoc: tariffData.sumoc ? tariffData.sumoc / 100 : null,
       sumCover: "0",
-      shipmentMethod: tariffData.transname ?? "наземно",
+      shipmentMethod: 1, //tariffData.transname ?? "наземно",
       aviaTariff: "0",
-      paynds: tariffData.paynds / 100,
-      pay: tariffData.pay / 100,
-      nds: tariffData.nds / 100,
+      paynds: tariffData.ground.valnds,
+      pay: tariffData.ground.val,
+      nds: tariffData.ground.valnds - tariffData.ground.val,
+      timereg: "08:31",
     };
   },
   //на сервер
@@ -246,11 +299,11 @@ const union = sample($barcode, fetchFromTarifficatorFx.doneData, (barcode, tarif
     weight: tariffData.weight,
     sumoc: tariffData.sumoc ? tariffData.sumoc / 100 : "-",
     sumCover: "0",
-    shipmentMethod: tariffData.transname ?? "наземно",
+    shipmentMethod: "наземно", //tariffData.transname ?? "наземно",
     aviaTariff: "0",
-    paynds: tariffData.paynds / 100,
-    pay: tariffData.pay / 100,
-    nds: tariffData.nds / 100,
+    paynds: tariffData.ground.valnds / 100,
+    pay: tariffData.ground.val / 100,
+    nds: (tariffData.ground.valnds - tariffData.ground.val) / 100,
   },
 }));
 
@@ -319,4 +372,6 @@ export {
   $defectF104,
   showComponentDialog,
   $componentDialogIsActive,
+  $f104Barcode,
+  waybillAdded,
 };

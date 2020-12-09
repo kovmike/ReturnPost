@@ -25,6 +25,11 @@ export const Navbar = () => {
           <Link className={classes.menuItem} to="/reports">
             Отчеты
           </Link>
+          <li>
+            <Link className={classes.menuItem} to="/oasu">
+              ОАСУ РПО
+            </Link>
+          </li>
         </li>
       </ul>
     </div>

@@ -2,11 +2,8 @@ import React from "react";
 import classes from "./InfoF104.module.css";
 import { LineInfoF104 } from "./../../molecules/LineInfoF104";
 import { LineInfoHeadF104 } from "./../../molecules/LineInfoHeadF104";
-import { $f104Barcode } from "./../../../model";
-import { useStore } from "effector-react";
 
-export const InfoF104 = ({ abonBox }) => {
-  const barcode = useStore($f104Barcode);
+export const InfoF104 = ({ abonBox, barcode }) => {
   const formatingDate = () => {
     const now = new Date();
     //.match(/[0-9\-]+(?=T)/g));

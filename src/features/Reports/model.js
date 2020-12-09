@@ -19,7 +19,7 @@ const $ungeneratedF104 = createStore([]).on(fetchNotGeneratedF104Fx.doneData, (_
 const generateFileFx = createEffect(async (barcode) => {
   return fetch(trackingURL, {
     method: "POST",
-    body: JSON.stringify({ destination: "generator", queryParameters: { barcode } }),
+    body: JSON.stringify({ destination: "generator", queryParameters: { action: "f104file", barcode } }),
   }).then((r) => r.json());
 });
 

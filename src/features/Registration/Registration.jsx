@@ -1,6 +1,6 @@
 import React from "react";
 import { useStore } from "effector-react";
-// import { F104 } from "./../F104/F104.jsx";
+import { F104 } from "./../F104/F104.jsx";
 import { HeaderRegistration, TableRegistration } from "./ui/";
 import { resetPackageList, notInserted, $componentDialogIsActive } from "./model";
 
@@ -14,7 +14,7 @@ export const Registration = () => {
 
   return (
     <div>
-      {/* {componentDialogIsActive ? <F104 /> : null} */}
+      {componentDialogIsActive ? <F104 /> : null}
       <HeaderRegistration />
       <hr />
       {notInsertedFlag ? <span style={{ color: "red" }}>РПО было приписано ранее</span> : null}

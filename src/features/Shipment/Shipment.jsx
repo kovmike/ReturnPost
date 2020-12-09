@@ -25,7 +25,7 @@ const Shipment = () => {
 
   useEffect(() => {
     getUnshippedWaybills();
-  }, []);
+  }, [unshippedWaybills]);
 
   const generateF23 = () => {
     genBarcodef23();

@@ -20,7 +20,7 @@ const checkStoredUserFx = createEffect("storedUser", {
 
 const isLogged = $loggedUser.map((user) => !user?.userName);
 //isLogged.watch((s) => console.log(s));
-$loggedUser.watch((s) => console.log(s));
+//$loggedUser.watch((s) => console.log(s));
 
 //если есть в ЛС
 guard({
