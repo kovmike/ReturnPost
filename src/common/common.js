@@ -11,7 +11,23 @@ const numMonth = (dateNow) => {
   const pv = ~~(monthCount / 99);
   return monthCount - pv * 99 + 1 < 10 ? `0${monthCount - pv * 99 + 1}` : monthCount - pv * 99 + 1;
 };
-
+//получение форматированной даты для записи в БД
+const getFormatDate = () => {
+  const now = new Date();
+  const addzero = (str) => {
+    return (str + ``).length < 2 ? "0" + str : str;
+  };
+  return (
+    "" +
+    now.getFullYear() +
+    addzero(now.getMonth() + 1) +
+    addzero(now.getDate()) +
+    "|" +
+    addzero(now.getHours()) +
+    ":" +
+    addzero(now.getMinutes())
+  );
+};
 //вычисление контрольного разряда (ртм 0008 кажется)
 const controlDigit = (str) => {
   const sumOdd =
@@ -112,4 +128,4 @@ const digToText = (dig) => {
   return result.replace(/[\s]{2,}/gi, " ").trim();
 };
 
-export { formatWaybillNum, numMonth, controlDigit, digToText };
+export { formatWaybillNum, numMonth, controlDigit, digToText, getFormatDate };

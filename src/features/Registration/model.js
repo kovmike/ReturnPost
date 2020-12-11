@@ -1,6 +1,6 @@
 import { createStore, createEffect, createEvent, guard, sample, forward, restore, combine } from "effector";
 import connectLocalStorage from "effector-localstorage";
-import { formatWaybillNum, numMonth, controlDigit } from "./../../common/common";
+import { formatWaybillNum, numMonth, controlDigit, getFormatDate } from "./../../common/common";
 import { $loggedUser } from "../Auth/model";
 
 //TODO навести порядок в этой помоищще
@@ -132,7 +132,7 @@ const fetchFromTrackingFx = createEffect("tracking", {
       mode: "cors",
     })
       .then((r) => r.json())
-      .then((data) => data[0]);
+      .then((data) => data.history[0]);
   },
 });
 //после ввода шк перекидываем данные в запрос на трекер
@@ -159,27 +159,28 @@ const addDeclaredValue = createEvent("addDeclaredValue");
 guard({
   source: fetchFromTrackingFx.doneData,
   filter: (payload) => {
-    // console.log(payload);
-    return +payload.ItemParameters.MailCtg.Id !== 3;
+    //console.log(payload);
+    return +payload.mailCtg !== 3;
   },
   target: addDeclaredValue,
 });
 
 //добавление остальных параметров в стор  для для формирования URL
+
 const createURLParameters = createEvent("createURLParameters");
 sample({
   source: $destinationIndex,
   clock: fetchFromTrackingFx.doneData,
   fn: (destIndex, payload) => {
     const resultParameters = {};
-    resultParameters.object = `&object=${payload.ItemParameters.MailType.Id}0${payload.ItemParameters.MailCtg.Id}0`;
-    resultParameters.weight = `&weight=${payload.ItemParameters.Mass}`;
+    resultParameters.object = `&object=${payload.mailType}0${payload.mailCtg}0`;
+    resultParameters.weight = `&weight=${payload.mass}`;
 
-    if (+payload.ItemParameters.MailType.Id === 23 || +payload.ItemParameters.MailType.Id === 24) {
+    if (+payload.mailType === 23 || +payload.mailType === 24) {
       resultParameters.from = `&from=${destIndex}`;
-      resultParameters.to = `&to=${payload.AddressParameters.DestinationAddress.Index}`;
+      resultParameters.to = `&to=${payload.indexTo}`;
     } else {
-      resultParameters.from = `&from=${payload.AddressParameters.DestinationAddress.Index}`;
+      resultParameters.from = `&from=${payload.indexTo}`;
       resultParameters.to = `&to=${destIndex}`;
     }
 
@@ -194,7 +195,7 @@ const $urlParameters = createStore({})
   .on(createURLParameters, (state, payload) => ({ ...state, ...payload }))
   .on(addDeclaredValue, (state, payload) => ({
     ...state,
-    sumoc: `&sumoc=${payload.FinanceParameters.Value}`,
+    sumoc: `&sumoc=${payload.value.value}`,
   }))
   .reset(addNewPackage); //reset стора после записи отравления в лист
 //$urlParameters.watch((s) => console.log(s));
@@ -265,7 +266,7 @@ sample({
       paynds: tariffData.ground.valnds,
       pay: tariffData.ground.val,
       nds: tariffData.ground.valnds - tariffData.ground.val,
-      timereg: "08:31",
+      timereg: getFormatDate(),
     };
   },
   //на сервер
@@ -298,7 +299,7 @@ const union = sample($barcode, fetchFromTarifficatorFx.doneData, (barcode, tarif
     destinationIndex: tariffData.typ === 23 || tariffData.typ === 24 ? tariffData.to : tariffData.from,
     weight: tariffData.weight,
     sumoc: tariffData.sumoc ? tariffData.sumoc / 100 : "-",
-    sumCover: "0",
+    sumCover: "нужен ли столбец?",
     shipmentMethod: "наземно", //tariffData.transname ?? "наземно",
     aviaTariff: "0",
     paynds: tariffData.ground.valnds / 100,
