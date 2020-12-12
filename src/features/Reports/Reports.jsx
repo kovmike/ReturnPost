@@ -7,11 +7,10 @@ export const Reports = () => {
   const ungenlist = useStore($ungeneratedF104);
   useEffect(() => {
     getNotGenF104();
-  }, [ungenlist]);
+  }, []);
 
   const handler = (barcode) => {
     generateFile(barcode);
-    getNotGenF104();
   };
 
   return (

@@ -19,7 +19,7 @@ const fetchUnshippedWaybillsFx = createEffect(async () => {
   }).then((r) => r.json());
 });
 
-//запрос количества РПО входящих в в ф104
+//запрос количества РПО входящих в ф104
 const countRPOInWaybillFx = createEffect(async (waybill) => {
   return fetch(trackingURL, {
     method: "POST",
@@ -29,6 +29,7 @@ const countRPOInWaybillFx = createEffect(async (waybill) => {
     .then((count) => ({ ...waybill, count }));
 });
 //отметка на накладных ф104 о принадлежности к ф23
+//TODO сделать на бэке??
 const updateF104Fx = createEffect(async (payload) => {
   return fetch(trackingURL, {
     method: "POST",
@@ -63,9 +64,9 @@ const $index = createStore("170000");
 const $listF23 = createStore([])
   .on(countRPOInWaybillFx.doneData, (f23, waybill) => [...f23, waybill])
   .on(removeFromF23, (f23, { barcode }) => f23.filter((waybill) => waybill.barcode !== barcode));
-const $allowedF23 = createStore(true).on(denied, (_, permit) => permit);
+const $allowedF23 = createStore(false).on(denied, (_, permit) => permit);
 const $unshippedWaybills = createStore([]).on(fetchUnshippedWaybillsFx.doneData, (_, list) => list);
-//$unshippedWaybills.watch((s) => console.log(s));
+$unshippedWaybills.watch((s) => console.log(s));
 
 forward({
   from: getUnshippedWaybills,
@@ -79,7 +80,7 @@ forward({
 
 sample({
   source: $listF23,
-  fn: (f23) => f23.every((item) => item.printdate === f23[0].printdate),
+  fn: (f23) => f23.length !== 0 && f23.every((item) => item.printdate === f23[0].printdate),
   target: denied,
 });
 
@@ -111,6 +112,12 @@ sample({
   clock: insertInToF23Fx.doneData,
   fn: (list, id) => ({ list: list.map(({ barcode }) => barcode).join(","), id }),
   target: updateF104Fx,
+});
+
+//повторный запрос в БД на наличие неотгруженных ф104, после отгрузки части накладных
+forward({
+  from: updateF104Fx.done,
+  to: fetchUnshippedWaybillsFx,
 });
 
 export {

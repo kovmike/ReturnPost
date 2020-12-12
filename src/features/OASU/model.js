@@ -15,7 +15,7 @@ const fetchRawRPOFx = createEffect(async () => {
 });
 
 //запрос на генерацию файла ф104
-const generateFileOASUFx = createEffect(async (barcode) => {
+const generateFileOASUFx = createEffect(async () => {
   return fetch(trackingURL, {
     method: "POST",
     body: JSON.stringify({ destination: "generator", queryParameters: { action: "oasu" } }),
@@ -23,6 +23,10 @@ const generateFileOASUFx = createEffect(async (barcode) => {
 });
 
 const $rawRPO = createStore(0).on(fetchRawRPOFx.doneData, (_, ungenList) => ungenList);
+forward({
+  from: getRawRPO,
+  to: fetchRawRPOFx,
+});
 
 forward({
   from: generateFileOASU,
@@ -30,7 +34,7 @@ forward({
 });
 
 forward({
-  from: getRawRPO,
+  from: generateFileOASUFx.done,
   to: fetchRawRPOFx,
 });
 

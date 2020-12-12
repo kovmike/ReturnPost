@@ -7,11 +7,11 @@ export const OASU = () => {
 
   useEffect(() => {
     getRawRPO();
-  }, [count]);
+  }, []);
 
   return (
     <div>
-      <h1>{count}</h1>
+      <h4>Отправлений не включенных в файл для ОАСУ РПО : {count}</h4>
       <button onClick={generateFileOASU}>Сформировать файл</button>
     </div>
   );

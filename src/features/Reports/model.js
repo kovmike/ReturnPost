@@ -13,8 +13,6 @@ const fetchNotGeneratedF104Fx = createEffect(async () => {
   }).then((r) => r.json());
 });
 
-const $ungeneratedF104 = createStore([]).on(fetchNotGeneratedF104Fx.doneData, (_, ungenList) => ungenList);
-
 //запрос на генерацию файла ф104
 const generateFileFx = createEffect(async (barcode) => {
   return fetch(trackingURL, {
@@ -23,6 +21,8 @@ const generateFileFx = createEffect(async (barcode) => {
   }).then((r) => r.json());
 });
 
+const $ungeneratedF104 = createStore([]).on(fetchNotGeneratedF104Fx.doneData, (_, ungenList) => ungenList);
+
 forward({
   from: generateFile,
   to: generateFileFx,
@@ -30,6 +30,11 @@ forward({
 
 forward({
   from: getNotGenF104,
+  to: fetchNotGeneratedF104Fx,
+});
+
+forward({
+  from: generateFileFx.done,
   to: fetchNotGeneratedF104Fx,
 });
 
