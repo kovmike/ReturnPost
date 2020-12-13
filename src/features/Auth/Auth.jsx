@@ -21,12 +21,15 @@ export const Auth = ({ history }) => {
   const authSubmit = () => {
     setNewLoggedUser(userId);
   };
+  const onEnter = (e) => {
+    if (e.charCode === 13) authSubmit();
+  };
 
   return (
     <div>
       <p>Вы не авторизованы</p>
       <label>Enter your ID</label>
-      <input type="text" onChange={changeInput} />
+      <input type="text" onKeyPress={onEnter} onChange={changeInput} />
       <button onClick={authSubmit}>Enter to program</button>
     </div>
   );
