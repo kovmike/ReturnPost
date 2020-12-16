@@ -13,8 +13,12 @@ const $loggedUser = restore(setStoredLoggedUser, false).reset(logOut);
 const checkStoredUserFx = createEffect("storedUser", {
   handler: () => {
     return localStorage.getItem("userName") === "null"
-      ? { userName: null, isAdmin: null }
-      : { userName: localStorage.getItem("userName"), isAdmin: localStorage.getItem("isAdmin") };
+      ? { userId: null, userName: null, isAdmin: null }
+      : {
+          userId: localStorage.getItem("userId"),
+          userName: localStorage.getItem("userName"),
+          isAdmin: localStorage.getItem("isAdmin"),
+        };
   },
 });
 
@@ -51,13 +55,14 @@ sample({
     source: fetchUserIDFx.doneData,
     filter: (data) => data.length > 0,
   }),
-  fn: (data) => ({ userName: data[0].name, isAdmin: data[0].isadmin }),
+  fn: (data) => ({ userId: data[0].userid, userName: data[0].name, isAdmin: data[0].isadmin }),
   target: $loggedUser,
 });
 
 //смотрим за стором и записываем в локалсторадж имя юзера
 $loggedUser.watch((s) => {
   if (s) {
+    localStorage.setItem("userId", s.userId);
     localStorage.setItem("userName", s.userName);
     localStorage.setItem("isAdmin", s.isAdmin);
   }

@@ -45,6 +45,20 @@ const F104 = () => {
 
   return (
     <dialog ref={dialogRef} className={classes.dialogForm}>
+      <button className={classes.closeBtn} onClick={() => showComponentDialog()}>
+        {"❌Закрыть"}
+      </button>
+      <button
+        className={classes.closeBtn}
+        onClick={() => {
+          window.print();
+          waybillAdded();
+          resetPackageList();
+          showComponentDialog();
+        }}
+      >
+        {"Напечатать и закрыть"}
+      </button>
       <div className={classes.wrapper}>
         <HeaderF104 waybillBarcode={f014Barcode} />
         <InfoF104 barcode={f014Barcode} abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname} />
@@ -63,19 +77,6 @@ const F104 = () => {
         />
         <AuthorF104 name={loggedUser.userName} />
       </div>
-      <button className={classes.closeBtn} onClick={() => showComponentDialog()}>
-        {"❌"}
-      </button>
-      <button
-        className={classes.closeBtn}
-        onClick={() => {
-          window.print();
-          waybillAdded();
-          resetPackageList();
-        }}
-      >
-        {"Типа печать тут будет"}
-      </button>
     </dialog>
   );
 };

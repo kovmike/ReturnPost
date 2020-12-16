@@ -18,7 +18,7 @@ import {
   $destinationIndex,
   defectCheked,
   $defectF104,
-  showComponentDialog,
+  generate,
   $allowed,
 } from "./../../../model.js";
 
@@ -50,7 +50,7 @@ export const HeaderRegistration = () => {
   };
 
   const showF104 = () => {
-    showComponentDialog();
+    generate();
   };
   const enterContainerNum = (e) => {
     enteredContainerNum(e.target.value);
@@ -86,7 +86,7 @@ export const HeaderRegistration = () => {
           Сформировать Ф.104
         </button>
         <ContainerNum handler={enterContainerNum} text={"Номер контейнера: "} value={container} />
-        <ContainerNum handler={enterStampNum} text={"Номер печати: "} value={stamp} />
+        <ContainerNum handler={enterStampNum} text={"Номер пломбы: "} value={stamp} />
       </div>
     </div>
   );
