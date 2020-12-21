@@ -44,7 +44,7 @@ export const Waybills = () => {
         <tr key={`package${waybill.id}`}>
           <td>{waybill.barcode}</td>
           <td>{new Date(waybill.printdate).toLocaleString("ru-RU").split(",")[0]}</td>
-          <td>{waybill.userid}</td>
+          <td>{waybill.name}</td>
           <td>{waybill.firmname}</td>
           <td>{waybill.type}</td>
           <td>

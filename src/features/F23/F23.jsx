@@ -24,7 +24,11 @@ const F23 = ({ barcode, list }) => {
         <ContainersF23 />
         <FromTo barcode={barcode} />
         <TableF23 list={list} />
-        <Summary />
+        <Summary
+          totalRpo={list.reduce((acc, waybill) => {
+            return acc + waybill.count;
+          }, 0)}
+        />
       </div>
     </dialog>
   );

@@ -58,8 +58,8 @@ sample({
       ...waybill,
       user: "",
     };
-    //если пользовательне админ, то добавляем его к запросу
-    if (+user.isAdmin === 0) return { ...res, user: user.userName };
+    //если пользовательне не админ, то добавляем его к запросу
+    if (+user.isAdmin === 0) return { ...res, user: user.userId };
     return res;
   }),
   clock: search,

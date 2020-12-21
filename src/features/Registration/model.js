@@ -6,7 +6,7 @@ import { $loggedUser } from "../Auth/model";
 //TODO навести порядок в этой помоищще
 
 const trackingURL = "http://10.106.0.253:8000/";
-const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json&service=28";
+const tarifficatorURL = "https://tariff.pochta.ru/tariff/v1/calculate?json";
 const today = new Date().toLocaleDateString("ru").split(".").reverse().join("-");
 //const trackingURLnew = "https://tracking.russianpost.ru/hdps/v5/history/";
 
@@ -79,9 +79,10 @@ sample({
 
 const enteringBarcode = createEvent("barcdode"); //запрашиваемый ШК
 const createURLParameters = createEvent("createURLParameters");
-const addRpo = createEvent();
+const transportDataToURL = createEvent();
 const editMass = createEvent();
 const addDeclaredValue = createEvent("addDeclaredValue"); //добавление оценочной стоимости к стору параметров(если таковая имеется)
+const addCoverValue = createEvent(); //добавление наложенного платежа в УРЛ(для тарификации не используется, но НАДО )
 const addNewPackage = createEvent("new package"); //добавление нового отправлния в лист
 const showNewMassDialog = createEvent();
 const resetPackageList = createEvent("resetPL");
@@ -94,7 +95,7 @@ const fetchFromTrackingFx = createEffect("tracking", {
       body: JSON.stringify({ destination: "tracker", ...payload }),
     })
       .then((r) => r.json())
-      .then((data) => data.history[0]);
+      .then((data) => data.history.filter((controlPoint) => controlPoint.operType === 1)[0]);
   },
 });
 
@@ -115,14 +116,15 @@ const insertFx = createEffect("insert", {
   },
 });
 
-const $buffer = createStore({}).on(fetchFromTarifficatorFx.doneData, (_, data) => data);
+const $buffer = createStore({}).on(fetchFromTrackingFx.doneData, (_, data) => data);
 const $barcode = createStore("").on(enteringBarcode, (_, payload) => payload.barcode); //баркод РПО
 const $urlParameters = createStore({})
   .on(createURLParameters, (state, payload) => ({ ...state, ...payload }))
-  .on(addDeclaredValue, (state, payload) => ({
+  .on(addDeclaredValue, (state, { buffer }) => ({
     ...state,
-    sumoc: `&sumoc=${payload.value.value}`,
+    sumoc: `&sumoc=${buffer.value.value}`,
   }))
+  .on(addCoverValue, (state, { buffer }) => ({ ...state, sumin: `&sumin=${buffer.payment.value}` }))
   .reset(addNewPackage); //reset стора после записи отравления в лист
 const $newMassDialog = createStore(false).on(showNewMassDialog, (s, _) => !s);
 //если не произошло добавление в бд
@@ -148,30 +150,59 @@ forward({
   to: fetchFromTrackingFx,
 });
 
+//если установлен флаг Дефектной ф104 отлавливаем приходящие значения и должны изменить массу перед отправкой на тарификацию
+split({
+  source: sample($defectF104, $buffer, (defect, buffer) => ({ defect, buffer })),
+  match: {
+    showDialog: ({ defect }) => defect,
+    transportDataToURL: ({ defect }) => !defect,
+  },
+  cases: {
+    showDialog: showNewMassDialog,
+    transportDataToURL: transportDataToURL,
+  },
+});
+
+sample({
+  source: $buffer,
+  clock: editMass,
+  fn: (buffer, newMass) => ({ buffer: { ...buffer, mass: newMass } }),
+  target: transportDataToURL,
+});
+
 //добавление оценочной стоимости к стору параметров(если таковая имеется)
 guard({
-  source: fetchFromTrackingFx.doneData,
-  filter: (payload) => {
-    //console.log(payload);
-    return +payload.mailCtg !== 3;
+  source: transportDataToURL,
+  filter: ({ buffer }) => {
+    console.log(buffer);
+    return +buffer.mailCtg !== 3;
   },
   target: addDeclaredValue,
+});
+//добавление наложенного платежа
+guard({
+  source: transportDataToURL,
+  filter: ({ buffer }) => {
+    return +buffer.mailCtg === 4;
+  },
+  target: addCoverValue,
 });
 
 //добавление остальных параметров в стор  для для формирования URL
 sample({
   source: $destinationIndex,
-  clock: fetchFromTrackingFx.doneData,
-  fn: (destIndex, payload) => {
+  clock: transportDataToURL,
+  fn: (destIndex, { buffer }) => {
     const resultParameters = {};
-    resultParameters.object = `&object=${payload.mailType}0${payload.mailCtg}0`;
-    resultParameters.weight = `&weight=${payload.mass}`;
+    resultParameters.service = buffer.postMark >= 8388608 ? `&service=28,12` : `&service=28`; //если не габаритное РПО
+    resultParameters.object = `&object=${buffer.mailType}0${buffer.mailCtg}0`;
+    resultParameters.weight = `&weight=${buffer.mass}`;
 
-    if (+payload.mailType === 23 || +payload.mailType === 24 || +payload.mailType === 4) {
+    if (+buffer.mailType === 23 || +buffer.mailType === 24 || +buffer.mailType === 4) {
       resultParameters.from = `&from=${destIndex}`;
-      resultParameters.to = `&to=${payload.indexTo}`;
+      resultParameters.to = `&to=${buffer.indexTo}`;
     } else {
-      resultParameters.from = `&from=${payload.indexTo}`;
+      resultParameters.from = `&from=${buffer.indexTo}`;
       resultParameters.to = `&to=${destIndex}`;
     }
 
@@ -195,25 +226,6 @@ sample({
   target: fetchFromTarifficatorFx,
 });
 
-//если установлен флаг Дефектной ф104 отлавливаем приходящие значения и должны изменить массу перед отправкой в БД и в LS
-split({
-  source: sample($defectF104, $buffer, (defect, buffer) => ({ defect, buffer })),
-  match: {
-    showDialog: ({ defect }) => defect,
-    addRpo: ({ defect }) => !defect,
-  },
-  cases: {
-    showDialog: showNewMassDialog,
-    addRpo: addRpo,
-  },
-});
-
-sample({
-  source: $buffer,
-  clock: editMass,
-  fn: (buffer, newMass) => ({ buffer: { ...buffer, weight: newMass } }),
-  target: addRpo,
-});
 //формирование пакета для отправки на сервер для вставки отправления в БД
 sample({
   //объединение данных о ШК, контейнере, печати и а/я
@@ -222,23 +234,23 @@ sample({
     abonBoxId: $selectedAbonBox[0]?.id ?? "",
     userid: $loggedUser.userId,
   })),
-  clock: addRpo,
-  fn: (container, { buffer }) => {
+  clock: fetchFromTarifficatorFx.done,
+  fn: (container, { params, result }) => {
     //добавляем данные об РПО
     return {
       ...container,
-      name: buffer.name,
-      typ: buffer.typ,
-      ctg: buffer.cat,
-      destinationIndex: buffer.typ === 23 || buffer.typ === 24 ? buffer.to : buffer.from,
-      weight: buffer.weight,
-      sumoc: buffer.sumoc ? buffer.sumoc / 100 : null,
-      sumCover: "0",
-      shipmentMethod: 1, //buffer.transname ?? "наземно",
+      name: result.name,
+      typ: result.typ,
+      ctg: result.cat,
+      destinationIndex: result.typ === 23 || result.typ === 24 ? result.to : result.from,
+      weight: result.weight,
+      sumoc: result.sumoc ? result.sumoc / 100 : null,
+      sumCover: params.match(/(?<=sumin=)\d+/g) ? params.match(/(?<=sumin=)\d+/g)[0] / 100 : null,
+      shipmentMethod: 1, //tarifficatorData.transname ?? "наземно",
       aviaTariff: "0",
-      paynds: buffer.ground.valnds,
-      pay: buffer.ground.val,
-      nds: buffer.ground.valnds - buffer.ground.val,
+      paynds: result.ground.valnds,
+      pay: result.ground.val,
+      nds: result.ground.valnds - result.ground.val,
       timereg: getFormatDate(),
     };
   },
@@ -247,19 +259,19 @@ sample({
 });
 
 //объединение данных ШК и пришедших из тарификатора(просто чтобы упростить запись)
-const union = sample($barcode, addRpo, (barcode, { buffer }) => ({
+const union = sample($barcode, fetchFromTarifficatorFx.done, (barcode, { params, result }) => ({
   [barcode]: {
-    name: buffer.name,
-    typ: buffer.typ,
-    destinationIndex: buffer.typ === 23 || buffer.typ === 24 ? buffer.to : buffer.from,
-    weight: buffer.weight,
-    sumoc: buffer.sumoc ? buffer.sumoc / 100 : "-",
-    sumCover: "нужен ли столбец?",
-    shipmentMethod: "наземно", //buffer.transname ?? "наземно",
+    name: result.name,
+    typ: result.typ,
+    destinationIndex: result.typ === 23 || result.typ === 24 ? result.to : result.from,
+    weight: result.weight,
+    sumoc: result.sumoc ? result.sumoc / 100 : "-",
+    sumCover: params.match(/(?<=sumin=)\d+/g) ? params.match(/(?<=sumin=)\d+/g)[0] / 100 : "-",
+    shipmentMethod: "наземно", //result.transname ?? "наземно",
     aviaTariff: "0",
-    paynds: buffer.ground.valnds / 100,
-    pay: buffer.ground.val / 100,
-    nds: (buffer.ground.valnds - buffer.ground.val) / 100,
+    paynds: result.ground.valnds / 100,
+    pay: result.ground.val / 100,
+    nds: (result.ground.valnds - result.ground.val) / 100,
   },
 }));
 
@@ -340,13 +352,15 @@ guard({
 
 //запись накладной в бд(формирование пэйлода для запроса на сервер)
 sample({
-  source: { $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser, $defectF104 },
+  source: { $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser, $defectF104, $container, $stamp },
   clock: waybillAdded,
-  fn: ({ $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser, $defectF104 }) => {
+  fn: ({ $numWaybill, $f104Barcode, $selectedAbonBox, $loggedUser, $defectF104, $container, $stamp }) => {
     return {
       id: +$numWaybill,
       barcode: $f104Barcode,
       printdate: today, //.replace(/\//g, "."),
+      containernum: $container,
+      stampnum: $stamp,
       firmid: $selectedAbonBox[0].id,
       userid: $loggedUser.userId,
       waybilltype: $defectF104 ? 5 : 6,

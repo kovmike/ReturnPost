@@ -63,7 +63,8 @@ const $f23barcode = createStore("").reset(updateF104Fx.doneData);
 const $index = createStore("170000");
 const $listF23 = createStore([])
   .on(countRPOInWaybillFx.doneData, (f23, waybill) => [...f23, waybill])
-  .on(removeFromF23, (f23, { barcode }) => f23.filter((waybill) => waybill.barcode !== barcode));
+  .on(removeFromF23, (f23, { barcode }) => f23.filter((waybill) => waybill.barcode !== barcode))
+  .reset(updateF104Fx.done);
 const $allowedF23 = createStore(false).on(denied, (_, permit) => permit);
 const $unshippedWaybills = createStore([]).on(fetchUnshippedWaybillsFx.doneData, (_, list) => list);
 $unshippedWaybills.watch((s) => console.log(s));
@@ -80,7 +81,7 @@ forward({
 
 sample({
   source: $listF23,
-  fn: (f23) => f23.length !== 0 && f23.every((item) => item.printdate === f23[0].printdate),
+  fn: (f23) => f23.length !== 0,
   target: denied,
 });
 

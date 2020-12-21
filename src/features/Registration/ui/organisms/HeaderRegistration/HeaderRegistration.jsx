@@ -79,7 +79,7 @@ export const HeaderRegistration = () => {
           }}
           addToClearButton={resetSelectedAbonBox}
         />
-        <CheckBox handler={checkDefect} checked={defectF104} />
+        <CheckBox handler={checkDefect} checked={defectF104} text={"Дефектная ведомость"} />
       </div>
       <div className={cl.f104Setup}>
         <button onClick={showF104} disabled={!allowed}>

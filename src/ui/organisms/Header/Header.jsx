@@ -14,7 +14,7 @@ export const Header = ({ user }) => {
   return (
     <div className={classes.headerWrapper}>
       <img src={logo} alt="logo" />
-      <div>ВОЗВРАТ!!!!</div>
+      <div>Почтовый возврат</div>
       <div className={classes.userBlock}>
         <label className={classes.user}>{user}</label>
         {user !== "Ожидание авторизации" ? (

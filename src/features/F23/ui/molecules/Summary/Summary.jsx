@@ -2,17 +2,17 @@ import { StampBlanc, Label, DivUnderLinedLong, DivUnderLined } from "../../atoms
 import cl from "./Summary.module.css";
 // import {Stamp}
 
-const Summary = () => {
+const Summary = ({ totalRpo }) => {
   return (
     <div className={cl.summaryWrapper}>
       <div className={cl.text}>
         <div className={cl.summaryLine}>
           <Label text={"Итого емкостей"} size={"16"} />
-          <DivUnderLinedLong text={""} />
+          <DivUnderLinedLong text={"1"} />
         </div>
         <div className={cl.summaryLine}>
           <Label text={"Отправлений"} size={"16"} />
-          <DivUnderLinedLong text={""} />
+          <DivUnderLinedLong text={totalRpo} />
         </div>
         <div className={cl.summaryLine}>
           <Label text={"Составил"} size={"16"} />

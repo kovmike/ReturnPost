@@ -3,7 +3,7 @@ import classes from "./InfoF104.module.css";
 import { LineInfoF104 } from "./../../molecules/LineInfoF104";
 import { LineInfoHeadF104 } from "./../../molecules/LineInfoHeadF104";
 
-export const InfoF104 = ({ abonBox, barcode }) => {
+export const InfoF104 = ({ abonBox, barcode, defect }) => {
   const formatingDate = () => {
     const now = new Date();
     //.match(/[0-9\-]+(?=T)/g));
@@ -20,7 +20,7 @@ export const InfoF104 = ({ abonBox, barcode }) => {
       <LineInfoHeadF104
         classes={classes}
         labelText={"возвращенных почтовых отправлений КАТЕГОРИЯ :"}
-        data={`СТАНДАРТНЫЕ`}
+        data={defect ? `ДЕФЕКТНЫЕ` : `НЕСТАНДАРТНЫЕ`}
       />
       <LineInfoHeadF104 classes={classes} labelText={"От :"} data={formatingDate()} />
 

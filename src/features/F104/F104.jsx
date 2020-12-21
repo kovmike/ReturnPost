@@ -10,6 +10,7 @@ import {
   $container,
   $f104Barcode,
   waybillAdded,
+  $defectF104,
 } from "./../Registration/model.js";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
 //import { $f104Barcode, waybillAdded } from "./model";
@@ -23,7 +24,7 @@ const F104 = () => {
   const f014Barcode = useStore($f104Barcode);
   const container = useStore($container);
   const stamp = useStore($stamp);
-
+  const defect = useStore($defectF104);
   const dialogRef = useRef(null);
   useEffect(() => {
     if (dialogRef.current) dialogRef.current.showModal();
@@ -61,7 +62,11 @@ const F104 = () => {
       </button>
       <div className={classes.wrapper}>
         <HeaderF104 waybillBarcode={f014Barcode} />
-        <InfoF104 barcode={f014Barcode} abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname} />
+        <InfoF104
+          barcode={f014Barcode}
+          defect={defect}
+          abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname}
+        />
         <InfoContainerF104 container={container} stamp={stamp} />
         <TableF104 packageList={packageList} />
         <DiffF104 packageList={packageList} />

@@ -9,8 +9,10 @@ const NewMassDialog = () => {
   }, [ref]);
 
   const enter = () => {
-    showNewMassDialog();
-    editMass(mass);
+    if (/\d+/g.test(mass)) {
+      editMass(mass);
+      showNewMassDialog();
+    }
   };
 
   const changeMass = (e) => {

@@ -1,6 +1,5 @@
 import { useStore } from "effector-react";
 import React, { useEffect } from "react";
-//import { genBarcodef23 } from "./../F23/model.js";
 import { F23 } from "./../F23";
 import {
   showF23Dialog,
@@ -39,7 +38,7 @@ const Shipment = () => {
       <button disabled={!allowedF23} onClick={() => generateF23()}>
         Сформировать ф23
       </button>
-      {allowedF23 ? null : <span> разные даты</span>}
+      {/* {allowedF23 ? null : <span> разные даты</span>} */}
       {f23DialogIsActive ? <F23 barcode={f23barcode} list={listF23} /> : null}
     </div>
   );

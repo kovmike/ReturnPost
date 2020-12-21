@@ -7,7 +7,7 @@ const ReportsTable = ({ ungenlist, handler }) => {
         <tr>
           <td>{waybill.barcode}</td>
           <td>{new Date(waybill.printdate).toLocaleString("ru-RU").split(",")[0]}</td>
-          <td>{waybill.userid}</td>
+          <td>{waybill.name}</td>
           <td>
             <button onClick={() => handler(waybill.barcode)}>file</button>
           </td>
