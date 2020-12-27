@@ -12,7 +12,9 @@ import {
   removeFromF23,
   $allowedF23,
   $listF23,
+  insertInToF23,
 } from "./model";
+
 import { ShipmentTable } from "./ui/molecules/";
 
 const Shipment = () => {
@@ -39,7 +41,9 @@ const Shipment = () => {
         Сформировать ф23
       </button>
       {/* {allowedF23 ? null : <span> разные даты</span>} */}
-      {f23DialogIsActive ? <F23 barcode={f23barcode} list={listF23} /> : null}
+      {f23DialogIsActive ? (
+        <F23 barcode={f23barcode} list={listF23} showComponentDialog={showF23Dialog} insertInToF23={insertInToF23} />
+      ) : null}
     </div>
   );
 };

@@ -109,6 +109,7 @@ const fetchFromTarifficatorFx = createEffect("tarifficator", {
 //эффект для вставки отравляется запрос на сервер с направление crud и экшеном insert
 const insertFx = createEffect("insert", {
   handler: async (payload) => {
+    console.log(payload);
     return fetch(trackingURL, {
       method: "POST",
       body: JSON.stringify({ destination: "rpo", queryParameters: { action: "INSERT", ...payload } }),
@@ -174,7 +175,6 @@ sample({
 guard({
   source: transportDataToURL,
   filter: ({ buffer }) => {
-    console.log(buffer);
     return +buffer.mailCtg !== 3;
   },
   target: addDeclaredValue,
@@ -267,7 +267,7 @@ const union = sample($barcode, fetchFromTarifficatorFx.done, (barcode, { params,
     weight: result.weight,
     sumoc: result.sumoc ? result.sumoc / 100 : "-",
     sumCover: params.match(/(?<=sumin=)\d+/g) ? params.match(/(?<=sumin=)\d+/g)[0] / 100 : "-",
-    shipmentMethod: "наземно", //result.transname ?? "наземно",
+    shipmentMethod: "наземно", //result.transname ?? "наземно",    ** 1- наземно
     aviaTariff: "0",
     paynds: result.ground.valnds / 100,
     pay: result.ground.val / 100,
@@ -363,7 +363,7 @@ sample({
       stampnum: $stamp,
       firmid: $selectedAbonBox[0].id,
       userid: $loggedUser.userId,
-      waybilltype: $defectF104 ? 5 : 6,
+      waybilltypeid: $defectF104 ? 5 : 6,
       f23id: 0,
     };
   },

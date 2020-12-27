@@ -5,19 +5,21 @@ import classes from "./DiffF104.module.css";
 
 export const DiffF104 = ({ packageList }) => {
   const TRANS_TYPE = {
-    avia: "авиа",
-    ground: "наземно",
+    avia: -1,
+    ground: 1,
   };
 
   const dividePackByClass = (packType, packTransName) => {
     const oneTypePackList = Object.keys(packageList).reduce((res, pack) => {
       //записываем в объект отправления вида packType
+
       if (packTransName) {
         return packageList[pack].typ === packType && packageList[pack].shipmentMethod === packTransName
           ? { ...res, [pack]: packageList[pack] }
           : res;
+      } else {
+        return packageList[pack].typ === packType ? { ...res, [pack]: packageList[pack] } : res;
       }
-      return packageList[pack].typ === packType ? { ...res, [pack]: packageList[pack] } : res;
     }, {});
     //считаем общую сумму за этот вид отправлений
     const sum = Object.keys(oneTypePackList).reduce((acc, pack) => {
@@ -47,7 +49,7 @@ export const DiffF104 = ({ packageList }) => {
           count: dividePackByClass(4, TRANS_TYPE.ground).count + dividePackByClass(47, TRANS_TYPE.ground).count,
           sum: dividePackByClass(4, TRANS_TYPE.ground).sum + dividePackByClass(47, TRANS_TYPE.ground).sum,
         }}
-        text={"посылок, пересылаемых наземным способом, на сумм"}
+        text={"посылок, пересылаемых наземным способом, на сумму"}
       />
       <LineDiff104
         classes={classes}

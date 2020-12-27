@@ -1,9 +1,8 @@
 import React, { useRef, useEffect } from "react";
 import { HeaderF23, ContainersF23, FromTo, TableF23, Summary } from "./ui/molecules";
-import { showF23Dialog, insertInToF23 } from "./../Shipment/model";
 import classes from "./F23.module.css";
 
-const F23 = ({ barcode, list }) => {
+const F23 = ({ barcode, list, showComponentDialog, insertInToF23 }) => {
   const dialogF23Ref = useRef(null);
   useEffect(() => {
     if (dialogF23Ref.current) dialogF23Ref.current.showModal();
@@ -14,8 +13,8 @@ const F23 = ({ barcode, list }) => {
       <div className={classes.wrapper}>
         <button
           onClick={() => {
-            insertInToF23();
-            showF23Dialog();
+            if (insertInToF23) insertInToF23();
+            showComponentDialog();
           }}
         >
           закрыть
@@ -25,6 +24,7 @@ const F23 = ({ barcode, list }) => {
         <FromTo barcode={barcode} />
         <TableF23 list={list} />
         <Summary
+          totalCapacity={list.length}
           totalRpo={list.reduce((acc, waybill) => {
             return acc + waybill.count;
           }, 0)}

@@ -1,5 +1,4 @@
 import React from "react";
-
 import classes from "./TableF104.module.css";
 import { digToText } from "./../../../../../common/common.js";
 
@@ -18,8 +17,10 @@ export const TableF104 = ({ packageList }) => {
           <td className={classes.tableCell}>{packageList[pack].weight}</td>
           <td className={classes.tableCell}>{packageList[pack].sumoc}</td>
           <td className={classes.tableCell}>{packageList[pack].sumCover}</td>
-          <td className={classes.tableCell}>{packageList[pack].shipmentMethod}</td>
-          <td className={classes.tableCell}>{packageList[pack].aviaTariff}</td>
+          {/* <td className={classes.tableCell}>{packageList[pack].shipmentMethod}</td>
+          <td className={classes.tableCell}>{packageList[pack].aviaTariff}</td> */}
+          <td className={classes.tableCell}>{"наземно"}</td>
+          <td className={classes.tableCell}>{"0"}</td>
           <td className={classes.tableCell}>{packageList[pack].paynds}</td>
         </tr>
       ));

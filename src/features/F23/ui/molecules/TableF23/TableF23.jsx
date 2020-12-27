@@ -17,8 +17,8 @@ const TableF23 = ({ list }) => {
           <td className={cl.cell}></td>
           <td className={cl.cell}></td>
           <td className={cl.cell}></td>
-          <td className={cl.cell}></td>
-          <td className={cl.cell}>1?</td>
+          <td className={cl.cell}>1</td>
+          <td className={cl.cell}>1</td>
           <td className={cl.cell}>{waybill.count}</td>
         </tr>
       );

@@ -1,4 +1,5 @@
 .long {
   width: 600px;
   border-bottom: 1px solid black;
+  text-align: center;
 }

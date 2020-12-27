@@ -1,30 +1,19 @@
 import React, { useEffect, useRef } from "react";
-import { useStore } from "effector-react";
-import { $loggedUser } from "./../Auth";
-import {
-  showComponentDialog,
-  $selectedAbonBox,
-  $packageList,
-  resetPackageList,
-  $stamp,
-  $container,
-  $f104Barcode,
-  waybillAdded,
-  $defectF104,
-} from "./../Registration/model.js";
 import { HeaderF104, InfoF104, InfoContainerF104, TableF104, DiffF104, PackagesF104, AuthorF104 } from "./ui";
-//import { $f104Barcode, waybillAdded } from "./model";
-
 import classes from "./F104.module.css";
 
-const F104 = () => {
-  const selectedAbonBox = useStore($selectedAbonBox);
-  const packageList = useStore($packageList);
-  const loggedUser = useStore($loggedUser);
-  const f014Barcode = useStore($f104Barcode);
-  const container = useStore($container);
-  const stamp = useStore($stamp);
-  const defect = useStore($defectF104);
+const F104 = ({
+  selectedAbonBox,
+  packageList,
+  user,
+  f104Barcode,
+  container,
+  stamp,
+  defect,
+  waybillAdded,
+  showComponentDialog,
+  resetPackageList,
+}) => {
   const dialogRef = useRef(null);
   useEffect(() => {
     if (dialogRef.current) dialogRef.current.showModal();
@@ -53,17 +42,17 @@ const F104 = () => {
         className={classes.closeBtn}
         onClick={() => {
           window.print();
-          waybillAdded();
-          resetPackageList();
+          if (waybillAdded) waybillAdded();
+          if (resetPackageList) resetPackageList();
           showComponentDialog();
         }}
       >
         {"Напечатать и закрыть"}
       </button>
       <div className={classes.wrapper}>
-        <HeaderF104 waybillBarcode={f014Barcode} />
+        <HeaderF104 waybillBarcode={f104Barcode} />
         <InfoF104
-          barcode={f014Barcode}
+          barcode={f104Barcode}
           defect={defect}
           abonBox={selectedAbonBox[0].abonentbox + " " + selectedAbonBox[0].firmname}
         />
@@ -80,7 +69,7 @@ const F104 = () => {
           sumWithOutNds={Math.round(sumForPackages(packageList).packagesPay * 100) / 100} //чтобы избежать кривых операций сложения типа 0.1+0.2 = 0.30000000000000000000000000004
           nds={Math.round(sumForPackages(packageList).packagesNds * 100) / 100}
         />
-        <AuthorF104 name={loggedUser.userName} />
+        <AuthorF104 name={user} />
       </div>
     </dialog>
   );
